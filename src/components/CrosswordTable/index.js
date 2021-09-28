@@ -73,9 +73,9 @@ const CrosswordTable = ({ width, height }) => {
   return (
     <table className='table'>
       <tbody>
-        {[...Array(height)].map((elem, y) => (
+        {[...Array(+height)].map((elem, y) => (
           <tr key={y}>
-            {[...Array(width)].map((elem, x) => (
+            {[...Array(+width)].map((elem, x) => (
               <td
                 key={x}
                 x={x}

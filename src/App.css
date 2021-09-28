@@ -14,3 +14,7 @@
 .cell_selected {
   background-color: aliceblue;
 }
+
+.cell_chosen {
+  background-color: #cce7ff;
+}

@@ -40,15 +40,13 @@ const isCellSelected = (x, y, cellSelectFrom, cellSelectTo) => {
 };
 
 function App() {
-  const [mouseIsPressed, setMouseIsPressed] = useState(false);
+  const [isMousePressed, setIsMousePressed] = useState(false);
 
   const [cellSelectFrom, setCellSelectFrom] = useState(initialCellState);
   const [cellSelectTo, setCellSelectTo] = useState(initialCellState);
 
   const onMouseDownHandle = (event) => {
-    console.log(event);
-
-    setMouseIsPressed(true);
+    setIsMousePressed(true);
 
     setCellSelectFrom({
       x: +event.target.attributes.x.value,
@@ -60,17 +58,15 @@ function App() {
       y: +event.target.attributes.y.value,
     });
 
-    console.log(window.getSelection());
+    // убирает баг с запретом выделения
     window.getSelection().removeAllRanges();
   };
 
   const onMouseOverHandle = (event) => {
-    if (mouseIsPressed) {
-      console.log(event);
-
+    if (isMousePressed) {
       if (event.relatedTarget.tagName !== 'TD') {
         // переход произошел не с другой ячейки
-        setMouseIsPressed(false);
+        setIsMousePressed(false);
         setCellSelectFrom(initialCellState);
         setCellSelectTo(initialCellState);
         return;
@@ -84,11 +80,15 @@ function App() {
   };
 
   const onMouseUpHandle = (event) => {
-    console.log(event);
+    if (
+      cellSelectFrom.x !== cellSelectTo.x &&
+      cellSelectFrom.y !== cellSelectTo.y
+    ) {
+      setCellSelectFrom(initialCellState);
+      setCellSelectTo(initialCellState);
+    }
 
-    setMouseIsPressed(false);
-
-    console.log(window.getSelection());
+    setIsMousePressed(false);
   };
 
   useEffect(() => {
@@ -100,8 +100,8 @@ function App() {
   }, [cellSelectTo]);
 
   useEffect(() => {
-    console.log('mouse pressed', mouseIsPressed);
-  }, [mouseIsPressed]);
+    console.log('mouse pressed', isMousePressed);
+  }, [isMousePressed]);
 
   return (
     <div className='App'>
@@ -117,7 +117,9 @@ function App() {
                     y={y}
                     className={
                       isCellSelected(x, y, cellSelectFrom, cellSelectTo)
-                        ? 'cell_selected'
+                        ? isMousePressed
+                          ? 'cell_selected'
+                          : 'cell_chosen'
                         : 'cell'
                     }
                     onMouseDown={onMouseDownHandle}

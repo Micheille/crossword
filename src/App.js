@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 
 import './App.css';
 
+const initialCellState = {
+  x: -1,
+  y: -1,
+};
+
 const isCellSelected = (x, y, cellSelectFrom, cellSelectTo) => {
   let { x: xFrom, y: yFrom } = cellSelectFrom;
   let { x: xTo, y: yTo } = cellSelectTo;
@@ -37,10 +42,12 @@ const isCellSelected = (x, y, cellSelectFrom, cellSelectTo) => {
 function App() {
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
 
-  const [cellSelectFrom, setCellSelectFrom] = useState({ x: -1, y: -1 });
-  const [cellSelectTo, setCellSelectTo] = useState({ x: -1, y: -1 });
+  const [cellSelectFrom, setCellSelectFrom] = useState(initialCellState);
+  const [cellSelectTo, setCellSelectTo] = useState(initialCellState);
 
   const onMouseDownHandle = (event) => {
+    console.log(event);
+
     setMouseIsPressed(true);
 
     setCellSelectFrom({
@@ -52,10 +59,23 @@ function App() {
       x: +event.target.attributes.x.value,
       y: +event.target.attributes.y.value,
     });
+
+    console.log(window.getSelection());
+    window.getSelection().removeAllRanges();
   };
 
   const onMouseOverHandle = (event) => {
     if (mouseIsPressed) {
+      console.log(event);
+
+      if (event.relatedTarget.tagName !== 'TD') {
+        // переход произошел не с другой ячейки
+        setMouseIsPressed(false);
+        setCellSelectFrom(initialCellState);
+        setCellSelectTo(initialCellState);
+        return;
+      }
+
       setCellSelectTo({
         x: +event.target.attributes.x.value,
         y: +event.target.attributes.y.value,
@@ -64,7 +84,11 @@ function App() {
   };
 
   const onMouseUpHandle = (event) => {
+    console.log(event);
+
     setMouseIsPressed(false);
+
+    console.log(window.getSelection());
   };
 
   useEffect(() => {
@@ -74,6 +98,10 @@ function App() {
   useEffect(() => {
     console.log('cell select to', cellSelectTo);
   }, [cellSelectTo]);
+
+  useEffect(() => {
+    console.log('mouse pressed', mouseIsPressed);
+  }, [mouseIsPressed]);
 
   return (
     <div className='App'>

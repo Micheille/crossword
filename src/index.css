@@ -11,17 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-table {
-  width: 300px; /* Ширина таблицы */
-  border-collapse: collapse; /* Убираем двойные линии между ячейками */
-}
-td,
-th {
-  padding: 3px; /* Поля вокруг содержимого таблицы */
-  border: 1px solid black; /* Параметры рамки */
-  height: 40px;
-}
-th {
-  background: #b0e0e6; /* Цвет фона */
-}

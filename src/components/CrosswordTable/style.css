@@ -1,0 +1,18 @@
+.table {
+  border-collapse: collapse;
+}
+
+.table__cell {
+  cursor: pointer;
+  border: 1px solid black;
+  height: 24px;
+  width: 24px;
+}
+
+.table__cell_selected {
+  background-color: aliceblue;
+}
+
+.table__cell_chosen {
+  background-color: #cce7ff;
+}

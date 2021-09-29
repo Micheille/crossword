@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { isCellSelected } from '../../utils/isCellSelected';
 
 import './style.css';
 
 const initialCellState = {
-  x: -1,
-  y: -1,
+  x: null,
+  y: null,
 };
 
-const CrosswordTable = ({ width, height }) => {
+const CrosswordTable = ({ width, height, setWordAttrs }) => {
   const [isMousePressed, setIsMousePressed] = useState(false);
 
   const [cellSelectFrom, setCellSelectFrom] = useState(initialCellState);
@@ -69,6 +69,20 @@ const CrosswordTable = ({ width, height }) => {
 
     setIsMousePressed(false);
   };
+
+  useEffect(() => {
+    if (!isMousePressed && cellSelectFrom.x !== null) {
+      const cellsChosen = document.querySelectorAll('.table__cell_chosen');
+      console.log(cellsChosen);
+
+      const wordAttrs = Array.from(cellsChosen).reduce(
+        (acc, cell) => (cell.textContent ? acc + cell.textContent : acc + '_'),
+        ''
+      );
+
+      setWordAttrs(wordAttrs);
+    }
+  }, [isMousePressed, cellSelectFrom, setWordAttrs]);
 
   return (
     <table className='table'>

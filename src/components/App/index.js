@@ -2,11 +2,24 @@ import React, { useState } from 'react';
 
 import { CrosswordTable } from '../CrosswordTable';
 
+import { useEffect } from 'react';
+
+import { words } from '../../utils/mockData';
+import { isWordSuitable } from '../../utils/isWordSuitable';
+
 import './App.css';
+
+const initialWordAttrsState = '';
 
 function App() {
   const [width, setWidth] = useState(15);
   const [heigth, setHeigth] = useState(15);
+
+  const [wordAttrs, setWordAttrs] = useState(initialWordAttrsState);
+
+  useEffect(() => {
+    console.log('word attrs', wordAttrs);
+  }, [wordAttrs]);
 
   return (
     <div className='crossword-app'>
@@ -41,7 +54,23 @@ function App() {
           </label>
         </div>
 
-        <CrosswordTable width={width} height={heigth} />
+        <CrosswordTable
+          width={width}
+          height={heigth}
+          setWordAttrs={setWordAttrs}
+        />
+
+        <section className='crossword-app__words'>
+          <select size={20}>
+            {words
+              .filter((word) => isWordSuitable(word, wordAttrs))
+              .map((word) => (
+                <option key={word} value={word}>
+                  {word}
+                </option>
+              ))}
+          </select>
+        </section>
       </main>
     </div>
   );

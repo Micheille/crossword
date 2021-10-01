@@ -9,6 +9,7 @@ import { isWordSuitable } from '../../utils/isWordSuitable';
 
 import './App.css';
 
+const initialCellsChosenState = [];
 const initialWordAttrsState = '';
 
 function App() {
@@ -16,10 +17,18 @@ function App() {
   const [heigth, setHeigth] = useState(15);
 
   const [wordAttrs, setWordAttrs] = useState(initialWordAttrsState);
+  const [cellsChosen, setCellsChosen] = useState(initialCellsChosenState);
 
   useEffect(() => {
-    console.log('word attrs', wordAttrs);
-  }, [wordAttrs]);
+    if (cellsChosen.length) {
+      const wordAttrs = cellsChosen.reduce(
+        (acc, cell) => (cell.textContent ? acc + cell.textContent : acc + '_'),
+        ''
+      );
+
+      setWordAttrs(wordAttrs);
+    }
+  }, [cellsChosen]);
 
   return (
     <div className='crossword-app'>
@@ -57,11 +66,19 @@ function App() {
         <CrosswordTable
           width={width}
           height={heigth}
+          setCellsChosen={setCellsChosen}
           setWordAttrs={setWordAttrs}
         />
 
         <section className='crossword-app__words'>
-          <select size={20}>
+          <select
+            size={20}
+            onChange={(event) => {
+              cellsChosen.forEach(
+                (cell, index) => (cell.textContent = event.target.value[index])
+              );
+            }}
+          >
             {words
               .filter((word) => isWordSuitable(word, wordAttrs))
               .map((word) => (

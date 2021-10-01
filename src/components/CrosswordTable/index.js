@@ -9,7 +9,7 @@ const initialCellState = {
   y: null,
 };
 
-const CrosswordTable = ({ width, height, setWordAttrs }) => {
+const CrosswordTable = ({ width, height, setCellsChosen, setWordAttrs }) => {
   const [isMousePressed, setIsMousePressed] = useState(false);
 
   const [cellSelectFrom, setCellSelectFrom] = useState(initialCellState);
@@ -73,16 +73,9 @@ const CrosswordTable = ({ width, height, setWordAttrs }) => {
   useEffect(() => {
     if (!isMousePressed && cellSelectFrom.x !== null) {
       const cellsChosen = document.querySelectorAll('.table__cell_chosen');
-      console.log(cellsChosen);
-
-      const wordAttrs = Array.from(cellsChosen).reduce(
-        (acc, cell) => (cell.textContent ? acc + cell.textContent : acc + '_'),
-        ''
-      );
-
-      setWordAttrs(wordAttrs);
+      setCellsChosen(Array.from(cellsChosen));
     }
-  }, [isMousePressed, cellSelectFrom, setWordAttrs]);
+  }, [isMousePressed, cellSelectFrom, setCellsChosen]);
 
   return (
     <table className='table'>

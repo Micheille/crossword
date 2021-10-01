@@ -6,10 +6,11 @@ const isWordSuitable = (word, wordAttrs) => {
       if (wordAttrs[i] !== '_' && wordAttrs[i] !== word[i]) {
         return false;
       }
-
-      return true;
     }
+
+    return true;
   }
+
   return false;
 };
 

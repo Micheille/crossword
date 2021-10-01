@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { CrosswordTable } from '../CrosswordTable';
-
-import { useEffect } from 'react';
+import { SizeInputs } from '../SizeInputs';
 
 import { words } from '../../utils/mockData';
 import { isWordSuitable } from '../../utils/isWordSuitable';
@@ -18,6 +17,12 @@ function App() {
 
   const [wordAttrs, setWordAttrs] = useState(initialWordAttrsState);
   const [cellsChosen, setCellsChosen] = useState(initialCellsChosenState);
+
+  const onSelectChange = (event) => {
+    cellsChosen.forEach(
+      (cell, index) => (cell.textContent = event.target.value[index])
+    );
+  };
 
   useEffect(() => {
     if (cellsChosen.length) {
@@ -37,48 +42,26 @@ function App() {
       </header>
 
       <main className='crossword-app__main'>
-        <div className='crossword-app__size-inputs'>
-          <label>
-            Ширина
-            <input
-              type='number'
-              min={10}
-              max={30}
-              value={width}
-              onChange={(event) => setWidth(event.target.value)}
-              id='width'
+        <section className='crossword-app__crossword'>
+          <div className='crossword-app__size-inputs'>
+            <SizeInputs
+              width={width}
+              setWidth={setWidth}
+              heigth={heigth}
+              setHeigth={setHeigth}
             />
-          </label>
+          </div>
 
-          <label>
-            Высота
-            <input
-              type='number'
-              min={10}
-              max={30}
-              value={heigth}
-              onChange={(event) => setHeigth(event.target.value)}
-              id='height'
-            />
-          </label>
-        </div>
-
-        <CrosswordTable
-          width={width}
-          height={heigth}
-          setCellsChosen={setCellsChosen}
-          setWordAttrs={setWordAttrs}
-        />
+          <CrosswordTable
+            width={width}
+            height={heigth}
+            setCellsChosen={setCellsChosen}
+            setWordAttrs={setWordAttrs}
+          />
+        </section>
 
         <section className='crossword-app__words'>
-          <select
-            size={20}
-            onChange={(event) => {
-              cellsChosen.forEach(
-                (cell, index) => (cell.textContent = event.target.value[index])
-              );
-            }}
-          >
+          <select size={20} title='dd' onChange={onSelectChange}>
             {words
               .filter((word) => isWordSuitable(word, wordAttrs))
               .map((word) => (

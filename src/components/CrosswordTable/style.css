@@ -16,3 +16,7 @@
 .table__cell_chosen {
   background-color: #cce7ff;
 }
+
+.table__cell_in-word {
+  background-color:navajowhite;
+}

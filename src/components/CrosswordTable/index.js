@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { isCellSelected } from '../../utils/isCellSelected';
+import { setClassName } from '../../utils/setClassName';
 
 import './style.css';
 
@@ -9,13 +9,20 @@ const initialCellState = {
   y: null,
 };
 
-const CrosswordTable = ({ width, height, setCellsChosen, setWordAttrs }) => {
+const CrosswordTable = ({
+  width,
+  height,
+  setCellsChosen,
+  wordChosen,
+  setWordChosen,
+}) => {
   const [isMousePressed, setIsMousePressed] = useState(false);
 
   const [cellSelectFrom, setCellSelectFrom] = useState(initialCellState);
   const [cellSelectTo, setCellSelectTo] = useState(initialCellState);
 
   const onMouseDownHandle = (event) => {
+    setWordChosen([]);
     setIsMousePressed(true);
 
     setCellSelectFrom({
@@ -87,13 +94,14 @@ const CrosswordTable = ({ width, height, setCellsChosen, setWordAttrs }) => {
                 key={x}
                 x={x}
                 y={y}
-                className={
-                  isCellSelected(x, y, cellSelectFrom, cellSelectTo)
-                    ? isMousePressed
-                      ? ' table__cell table__cell_selected'
-                      : 'table__cell table__cell_chosen'
-                    : 'table__cell'
-                }
+                className={setClassName(
+                  x,
+                  y,
+                  wordChosen,
+                  cellSelectFrom,
+                  cellSelectTo,
+                  isMousePressed
+                )}
                 onMouseDown={onMouseDownHandle}
                 onMouseOver={onMouseOverHandle}
                 onMouseUp={onMouseUpHandle}

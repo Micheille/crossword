@@ -5,27 +5,45 @@ import { SizeInputs } from '../SizeInputs';
 
 import { words } from '../../utils/mockData';
 import { isWordSuitable } from '../../utils/isWordSuitable';
+import { arrayContains } from '../../utils/arrayContains';
 
 import './App.css';
 
 const initialCellsChosenState = [];
 const initialWordAttrsState = '';
+const initialWordChosenState = [];
 
 function App() {
   const [width, setWidth] = useState(15);
   const [heigth, setHeigth] = useState(15);
 
+  const [wordsWritten, setWordsWritten] = useState([]);
   const [wordAttrs, setWordAttrs] = useState(initialWordAttrsState);
   const [cellsChosen, setCellsChosen] = useState(initialCellsChosenState);
+  const [wordChosen, setWordChosen] = useState(initialWordChosenState);
 
   const onSelectChange = (event) => {
     cellsChosen.forEach(
       (cell, index) => (cell.textContent = event.target.value[index])
     );
+
+    setWordsWritten([...wordsWritten, cellsChosen]);
   };
 
   useEffect(() => {
+    console.log('wordChosen: ', wordChosen);
+  }, [wordChosen]);
+
+  useEffect(() => {
     if (cellsChosen.length) {
+      for (let i = 0; i < wordsWritten.length; i++) {
+        if (arrayContains(wordsWritten[i], cellsChosen)) {
+          console.log('contains: ', wordsWritten[i], cellsChosen);
+          setWordChosen(wordsWritten[i]);
+          break;
+        }
+      }
+
       const wordAttrs = cellsChosen.reduce(
         (acc, cell) => (cell.textContent ? acc + cell.textContent : acc + '_'),
         ''
@@ -33,7 +51,11 @@ function App() {
 
       setWordAttrs(wordAttrs);
     }
-  }, [cellsChosen]);
+  }, [cellsChosen, wordsWritten]);
+
+  useEffect(() => {
+    console.log('words written', wordsWritten);
+  }, [wordsWritten]);
 
   return (
     <div className='crossword-app'>
@@ -56,7 +78,8 @@ function App() {
             width={width}
             height={heigth}
             setCellsChosen={setCellsChosen}
-            setWordAttrs={setWordAttrs}
+            wordChosen={wordChosen}
+            setWordChosen={setWordChosen}
           />
         </section>
 

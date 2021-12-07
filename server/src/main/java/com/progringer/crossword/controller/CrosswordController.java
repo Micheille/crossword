@@ -40,8 +40,8 @@ public class CrosswordController {
 //сохранение куки-файлов с данными о разгаданных словах и кроссвордах игрока.
     @PostMapping("/save_crossword")
     @ResponseStatus(HttpStatus.CREATED)
-    public CrosswordSavedResponse saveCrossword(@RequestParam @NotEmpty String name, @RequestBody @NotNull CrosswordDto crosswordDto) throws IOException {
-        Crossword crossword = convertToEntity(crosswordDto);
+    public CrosswordSavedResponse saveCrossword(@RequestParam @NotEmpty String name, @RequestBody @NotNull Crossword crossword) throws IOException {
+        //Crossword crossword = convertToEntity(crosswordDto);
         crossword.setName(name);
         fileService.saveCrosswordToFile(crossword);
         return new CrosswordSavedResponse(name);

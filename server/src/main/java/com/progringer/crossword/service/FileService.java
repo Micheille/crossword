@@ -1,22 +1,15 @@
 package com.progringer.crossword.service;
 
 import com.progringer.crossword.model.Crossword;
-import org.springframework.stereotype.Service;
+import com.progringer.crossword.model.Dictionary;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
-@Service
-public class FileService {
-    Path crosswordFiles = Path.of("src","main","resources","static","crosswords");
-
-    public void saveCrosswordToFile(Crossword crossword) throws IOException {
-        Path path = Files.createFile(crosswordFiles.resolve(filenameFromName(crossword.getName(), ".kros")));
-        //TODO запись объекта в файл
-    }
-
-    private String filenameFromName(String name, String exp){
-        return name.replaceAll("\\W", "_")+exp;
-    }
+public interface FileService {
+    void saveCrosswordToFile(Crossword crossword) throws IOException;
+    void saveDictionaryToFile(Dictionary dictionary) throws IOException;
+    Crossword browseCrosswordFromFile(String name) throws IOException, ClassNotFoundException;
+    Dictionary browseDictionaryFromFile(String name) throws IOException, ClassNotFoundException;
+    Dictionary parseFileToDictionary(MultipartFile file) throws IOException;
 }

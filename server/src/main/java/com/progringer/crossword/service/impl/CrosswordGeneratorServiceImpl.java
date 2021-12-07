@@ -1,37 +1,45 @@
-package com.progringer.crossword;
+package com.progringer.crossword.service.impl;
 
 import com.progringer.crossword.model.Crossword;
-import com.progringer.crossword.model.Dictionary;
-import com.progringer.crossword.model.Word;
+import com.progringer.crossword.model.DictionaryForCrossword;
+import com.progringer.crossword.model.Notion;
+import com.progringer.crossword.model.WordInCrossword;
+import com.progringer.crossword.service.CrosswordGeneratorService;
+import com.progringer.crossword.service.FileService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.nio.file.Path;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-public class CrosswordGenerator {
+@Service
+public class CrosswordGeneratorServiceImpl implements CrosswordGeneratorService {
     private final char NOT_HORIZONTAL = '/';
     private final char NOT_VERTICAL = '\\';
     private final char NOT_WRITE = '-';
     private final char EMPTY = '.';
     private Crossword crossword;
-    private Dictionary dictionary;
+    private DictionaryForCrossword dictionary;
     private char[][] grid;
 
-    public CrosswordGenerator(int n, int m, String file){
+    @Autowired
+    private FileService fileService;
+
+    public Crossword generateCrossword(int n, int m, String dictName) throws IOException, ClassNotFoundException {
         crossword = new Crossword(n, m);
         grid = new char[n][m];
         for (char[] row : grid)
             Arrays.fill(row, EMPTY);
-        dictionary = new Dictionary(Path.of("src","main","resources","static", file));
+        dictionary = new DictionaryForCrossword(fileService.browseDictionaryFromFile(dictName));
+        return generate();
     }
 
-    public Crossword generate() {
-        Word firstWord = getFirstWord(grid.length, grid[0].length);
+    private Crossword generate() {
+        WordInCrossword firstWord = getFirstWord(grid.length, grid[0].length);
         crossword.addWord(firstWord);
-        dictionary.addUsedWord(firstWord.getWord());
         int current = 0;
         while (crossword.getWords().size()>current) {
             findNextWord(crossword.getWords().get(current));
@@ -40,29 +48,30 @@ public class CrosswordGenerator {
         return crossword;
     }
 
-    private Word getFirstWord(int n, int m) {
+    private WordInCrossword getFirstWord(int n, int m) {
         int firstDir;
-        String firstWord;
+        Notion firstWord;
         int i;
         int j;
         if (n>m){
             firstDir = -1;
             firstWord = dictionary.getLongest(n);
-            i = (n-firstWord.length())/2;
+            i = (n-firstWord.getWord().length())/2;
             j = m/2;
         }
         else {
             firstDir = 1;
             firstWord = dictionary.getLongest(m);
             i = n/2;
-            j = (m-firstWord.length())/2;
+            j = (m-firstWord.getWord().length())/2;
         }
-        Word word = new Word(firstWord, i, j, firstDir, dictionary.getNotUsedDefinition(firstWord));
+        WordInCrossword word = new WordInCrossword(firstWord.getWord(), i, j, firstDir, firstWord.getDefinition());
         writeWord(word);
+        dictionary.addUsedWord(firstWord);
         return word;
     }
 
-    private void writeWord(Word word){
+    private void writeWord(WordInCrossword word){
         char[] chars = word.getWord().toCharArray();
         int j = word.getJ();
         int i = word.getI();
@@ -110,7 +119,7 @@ public class CrosswordGenerator {
         }
     }
 
-    private void findNextWord(Word oldWord) {
+    private void findNextWord(WordInCrossword oldWord) {
         int dir = oldWord.getDirection()*-1;   //меняем направление на противоположное направлению слова-основе
         for (int k = 0; k< oldWord.getWord().length(); k++){
             StringBuffer regex = createRegex(oldWord, k);
@@ -120,7 +129,7 @@ public class CrosswordGenerator {
         }
     }
 
-    private StringBuffer createRegex(Word oldWord, int k){
+    private StringBuffer createRegex(WordInCrossword oldWord, int k){
         int dir = oldWord.getDirection()*-1;   //меняем направление на противоположное направлению слова-основе
         char[] chars = oldWord.getWord().toCharArray();
         int iteratedVar = 0;
@@ -204,11 +213,11 @@ public class CrosswordGenerator {
         }
     }
 
-    private void findMatchesAndWrite(String regex, int dir, Word oldWord, int k){
+    private void findMatchesAndWrite(String regex, int dir, WordInCrossword oldWord, int k){
         Pattern pattern = Pattern.compile(regex);
-        Optional<String> newWord = dictionary.getMatches(pattern);
+        Optional<Notion> newWord = dictionary.getMatches(pattern);
         if (newWord.isPresent()) {
-            Matcher matcher = pattern.matcher(newWord.get());
+            Matcher matcher = pattern.matcher(newWord.get().getWord());
             if (matcher.matches()) {
                 int shift = 0;
                 try {
@@ -220,7 +229,7 @@ public class CrosswordGenerator {
                 }
                 int i1 = dir == -1 ? oldWord.getI() - shift : oldWord.getI() + k;
                 int j1 = dir == -1 ? oldWord.getJ() + k : oldWord.getJ() - shift;
-                Word word = new Word(newWord.get(), i1, j1, dir, dictionary.getNotUsedDefinition(newWord.get()));
+                WordInCrossword word = new WordInCrossword(newWord.get().getWord(), i1, j1, dir, newWord.get().getDefinition());
                 dictionary.addUsedWord(newWord.get());
                 crossword.addWord(word);
                 writeWord(word);
@@ -241,8 +250,8 @@ public class CrosswordGenerator {
     }
 
     public void printGrid(){
-        for(int i = 0; i<grid.length; i++){
-            for (char c:grid[i]){
+        for (char[] chars : grid) {
+            for (char c : chars) {
                 System.out.printf("%s ", c);
             }
             System.out.println();

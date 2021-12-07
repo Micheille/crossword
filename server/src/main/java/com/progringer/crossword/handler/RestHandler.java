@@ -10,6 +10,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
+import java.nio.file.FileAlreadyExistsException;
 
 @ControllerAdvice
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -19,7 +20,7 @@ public class RestHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public DefaultErrorResponse defaultExceptionHandler(Exception ex){
-        //ex.printStackTrace();
+        ex.printStackTrace();
         return new DefaultErrorResponse(ex.getClass()+" "+ex.getMessage());
     }
 
@@ -28,6 +29,12 @@ public class RestHandler {
     @ResponseBody
     public DefaultErrorResponse dictionaryErrorHandler(DictionaryFileException ex){
         return new DefaultErrorResponse(ex.getMessage());
+    }
+    @ExceptionHandler(FileAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
+    @ResponseBody
+    public DefaultErrorResponse fileAlreadyExistsExceptionHandler(FileAlreadyExistsException ex){
+        return new DefaultErrorResponse("Файл с таким именем уже существует!");
     }
 
     @ExceptionHandler({ConstraintViolationException.class, MethodArgumentNotValidException.class, MissingServletRequestParameterException.class, HttpMediaTypeNotSupportedException.class})

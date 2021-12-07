@@ -1,6 +1,6 @@
 package com.progringer.crossword.dto;
 
-import com.progringer.crossword.model.Word;
+import com.progringer.crossword.model.WordInCrossword;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CrosswordDto {
 
-    private List<Word> words;
+    private String name;
+    private List<WordInCrossword> words;
     private int n;
     private int m;
 

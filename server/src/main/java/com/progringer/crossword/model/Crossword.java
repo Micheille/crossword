@@ -1,15 +1,18 @@
 package com.progringer.crossword.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class Crossword {
+@NoArgsConstructor
+public class Crossword implements Serializable {
 
     private String name;
-    private List<Word> words;
+    private List<WordInCrossword> words;
     private int n;
     private int m;
 
@@ -19,7 +22,13 @@ public class Crossword {
         this.m = m;
     }
 
-    public void addWord(Word word){
+    public Crossword(int n, int m, List<WordInCrossword> words){
+        this.words = words;
+        this.n = n;
+        this.m = m;
+    }
+
+    public void addWord(WordInCrossword word){
         words.add(word);
     }
 }

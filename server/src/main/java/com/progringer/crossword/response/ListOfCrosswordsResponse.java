@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ListOfCrosswordsResponse {
-    public List<String> names;
+    private List<String> names;
 }

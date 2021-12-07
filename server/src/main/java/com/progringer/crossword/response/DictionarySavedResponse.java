@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DictionarySavedResponse {
-    public String dictionaryName;
+    private String dictionaryName;
 }

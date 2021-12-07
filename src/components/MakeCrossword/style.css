@@ -1,0 +1,8 @@
+.crossword-manual {
+  display: flex;
+	justify-content: space-between;
+}
+.crossword-manual__info {
+  display: flex;
+  flex-direction: column;
+}

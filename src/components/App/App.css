@@ -1,14 +1,28 @@
 .app {
-  text-align: center;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   font-size: 18px;
 }
 
-.app__main {
+.main {
   flex-grow: 1;
-  display: flex;
-  align-items: center;
+}
+.main__container {
+  min-width: 768px;
+  width: 768px;
+  margin: 0 auto;
+  padding: 12px 32px;
+}
+
+.footer {
+  border-top: 1px solid black;
+}
+.footer__container {
+  min-width: 768px;
+  width: 768px;
+  margin: 0 auto;
+  padding: 12px 32px;
+
+  text-align: right;
 }

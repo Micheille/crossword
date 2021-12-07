@@ -1,100 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import { CrosswordTable } from '../CrosswordTable';
-import { SizeInputs } from '../SizeInputs';
-
-import { words } from '../../utils/mockData';
-import { isWordSuitable } from '../../utils/isWordSuitable';
-import { arrayContains } from '../../utils/arrayContains';
+import { Header } from '../Header';
+import { CrosswordsUser } from '../CrosswordsUser';
+import { CrosswordsAdmin } from '../СrosswordsAdmin';
+import { AdminPanel } from '../AdminPanel';
+import { CrosswordManual } from '../CrosswordManual';
+import { AuthForm } from '../AuthForm';
 
 import './App.css';
 
-const initialCellsChosenState = [];
-const initialWordAttrsState = '';
-const initialWordChosenState = [];
-
 function App() {
-  const [width, setWidth] = useState(15);
-  const [heigth, setHeigth] = useState(15);
-
-  const [wordsWritten, setWordsWritten] = useState([]);
-  const [wordAttrs, setWordAttrs] = useState(initialWordAttrsState);
-  const [cellsChosen, setCellsChosen] = useState(initialCellsChosenState);
-  const [wordChosen, setWordChosen] = useState(initialWordChosenState);
-
-  const onSelectChange = (event) => {
-    cellsChosen.forEach(
-      (cell, index) => (cell.textContent = event.target.value[index])
-    );
-
-    setWordsWritten([...wordsWritten, cellsChosen]);
-  };
-
-  useEffect(() => {
-    console.log('wordChosen: ', wordChosen);
-  }, [wordChosen]);
-
-  useEffect(() => {
-    if (cellsChosen.length) {
-      for (let i = 0; i < wordsWritten.length; i++) {
-        if (arrayContains(wordsWritten[i], cellsChosen)) {
-          console.log('contains: ', wordsWritten[i], cellsChosen);
-          setWordChosen(wordsWritten[i]);
-          break;
-        }
-      }
-
-      const wordAttrs = cellsChosen.reduce(
-        (acc, cell) => (cell.textContent ? acc + cell.textContent : acc + '_'),
-        ''
-      );
-
-      setWordAttrs(wordAttrs);
-    }
-  }, [cellsChosen, wordsWritten]);
-
-  useEffect(() => {
-    console.log('words written', wordsWritten);
-  }, [wordsWritten]);
+  const [isAuthorized, setIsAuthorized] = useState(
+    sessionStorage.getItem('isAuthorized') === 'true' ? true : false
+  );
 
   return (
     <div className='app'>
-      <header className='app__header'>
-        <h1>Сrossword Puzzle Site</h1>
-      </header>
+      <Router>
+        <Header isAuthorized={isAuthorized} setIsAuthorized={setIsAuthorized} />
 
-      <main className='app__main'>
-        <section className='app__crossword'>
-          <div className='app__size-inputs'>
-            <SizeInputs
-              width={width}
-              setWidth={setWidth}
-              heigth={heigth}
-              setHeigth={setHeigth}
-            />
+        <main className='main'>
+          <div className='main__container'>
+            <Routes>
+              <Route
+                path='/login'
+                element={<AuthForm setIsAuthorized={setIsAuthorized} />}
+              />
+              {isAuthorized ? (
+                <>
+                  <Route path='/' element={<AdminPanel />} />
+                  <Route path='/crosswords' element={<CrosswordsAdmin />} />
+                </>
+              ) : (
+                <>
+                  <Route path='/' element={<CrosswordsUser />} />
+                </>
+              )}
+              <Route path='/crosswords/new' element={<CrosswordManual />} />
+            </Routes>
           </div>
+        </main>
 
-          <CrosswordTable
-            width={width}
-            height={heigth}
-            setCellsChosen={setCellsChosen}
-            wordChosen={wordChosen}
-            setWordChosen={setWordChosen}
-          />
-        </section>
-
-        <section className='app__words'>
-          <select size={20} title='dd' onChange={onSelectChange}>
-            {words
-              .filter((word) => isWordSuitable(word, wordAttrs))
-              .map((word) => (
-                <option key={word} value={word}>
-                  {word}
-                </option>
-              ))}
-          </select>
-        </section>
-      </main>
+        <footer className='footer'>
+          <div className='footer__container'>
+            <p>Сведения об этом сайте</p>
+          </div>
+        </footer>
+      </Router>
     </div>
   );
 }

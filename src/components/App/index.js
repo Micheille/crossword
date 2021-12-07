@@ -58,14 +58,14 @@ function App() {
   }, [wordsWritten]);
 
   return (
-    <div className='crossword-app'>
-      <header className='crossword-app__header'>
+    <div className='app'>
+      <header className='app__header'>
         <h1>Сrossword Puzzle Site</h1>
       </header>
 
-      <main className='crossword-app__main'>
-        <section className='crossword-app__crossword'>
-          <div className='crossword-app__size-inputs'>
+      <main className='app__main'>
+        <section className='app__crossword'>
+          <div className='app__size-inputs'>
             <SizeInputs
               width={width}
               setWidth={setWidth}
@@ -83,7 +83,7 @@ function App() {
           />
         </section>
 
-        <section className='crossword-app__words'>
+        <section className='app__words'>
           <select size={20} title='dd' onChange={onSelectChange}>
             {words
               .filter((word) => isWordSuitable(word, wordAttrs))

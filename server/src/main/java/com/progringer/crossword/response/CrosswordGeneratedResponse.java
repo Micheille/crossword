@@ -2,10 +2,10 @@ package com.progringer.crossword.response;
 
 import com.progringer.crossword.model.Crossword;
 
-public class CrosswordResponse {
+public class CrosswordGeneratedResponse {
     private Crossword crossword;
 
-    public CrosswordResponse(Crossword crossword) {
+    public CrosswordGeneratedResponse(Crossword crossword) {
         this.crossword = crossword;
     }
 

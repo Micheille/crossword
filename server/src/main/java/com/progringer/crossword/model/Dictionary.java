@@ -1,6 +1,9 @@
 package com.progringer.crossword.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.progringer.crossword.exception.DictionaryFileException;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -14,8 +17,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Dictionary {
+    @JsonIgnore
     private Path file;
+    @JsonIgnore
     private Map<String, String> usedWords;
+    @Getter
+    @Setter
     private Map<String, String> dict;
     public Dictionary(Path file){
         this.file = file;

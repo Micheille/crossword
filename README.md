@@ -4,7 +4,7 @@
 1. Клонируем проект с помощью git clone https://github.com/Micheille/crossword.git
 2. Переходим в директорию server:  cd server
 3. Собираем докер-образ: docker build --tag=crossword-server:latest .
-4. Запускаем контейнер: docker run -p8080:8080 crossword-server:latest
+4. Запускаем контейнер: docker run -p8080:8080 crossword-server:latest -d
 
 Готово! Сервер запущен!
 

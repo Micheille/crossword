@@ -1,5 +1,6 @@
 package com.progringer.crossword.service.impl;
 
+import com.progringer.crossword.exception.DictionaryFileException;
 import com.progringer.crossword.model.Crossword;
 import com.progringer.crossword.model.Dictionary;
 import com.progringer.crossword.model.Notion;
@@ -11,6 +12,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Service
@@ -59,10 +62,20 @@ public class FileServiceImpl implements FileService {
         }
     }
     @Override
-    public Dictionary parseFileToDictionary(MultipartFile file) throws IOException {
+    public Dictionary parseFileToDictionary(MultipartFile file) {
         Dictionary dictionary = new Dictionary();
-        new BufferedReader(new InputStreamReader(file.getInputStream(), Charset.forName("windows-1251"))).lines().map(line->line.split("\\s",2)).forEach(x->dictionary.addNotion(new Notion(x[0], x[1])));
-        return dictionary;
+        List<Notion> notions = new ArrayList<>();
+        try {
+            new BufferedReader(new InputStreamReader(file.getInputStream(), Charset.forName("windows-1251"))).lines().filter(line->line.matches("[\\p{InCyrillic}]+\\s.+")).map(line->line.split("\\s",2)).forEach(x->notions.add(new Notion(x[0], x[1])));
+        }
+        catch (Exception e){
+            throw new DictionaryFileException();
+        }
+        if (notions.size()>0) {
+            dictionary.setWords(notions);
+            return dictionary;
+        }
+        return null;
     }
     @Override
     public Crossword browseCrosswordFromFile(Path path) throws IOException, ClassNotFoundException {

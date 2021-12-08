@@ -14,15 +14,3 @@
   margin: 0 auto;
   padding: 12px 32px;
 }
-
-.footer {
-  border-top: 1px solid black;
-}
-.footer__container {
-  min-width: 768px;
-  width: 768px;
-  margin: 0 auto;
-  padding: 12px 32px;
-
-  text-align: right;
-}

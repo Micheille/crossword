@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { Header } from '../Header';
+import { Footer } from '../Footer';
 import { CrosswordsUser } from '../CrosswordsUser';
 import { CrosswordsAdmin } from '../СrosswordsAdmin';
 import { AdminPanel } from '../AdminPanel';
@@ -42,11 +43,7 @@ function App() {
           </div>
         </main>
 
-        <footer className='footer'>
-          <div className='footer__container'>
-            <p>Сведения об этом сайте</p>
-          </div>
-        </footer>
+        <Footer />
       </Router>
     </div>
   );

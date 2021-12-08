@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import Logo from '../../assets/logo.svg';
@@ -6,9 +7,12 @@ import Logo from '../../assets/logo.svg';
 import './style.css';
 
 const Header = ({ isAuthorized, setIsAuthorized }) => {
+  const navigate = useNavigate();
+
   const logoutHandler = (e) => {
     sessionStorage.setItem('isAuthorized', false);
     setIsAuthorized(false);
+    navigate('/');
   };
 
   return (

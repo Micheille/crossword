@@ -7,10 +7,12 @@ import com.progringer.crossword.model.Dictionary;
 import com.progringer.crossword.response.*;
 import com.progringer.crossword.service.CrosswordGeneratorService;
 import com.progringer.crossword.service.FileService;
+import com.progringer.crossword.service.ListService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -21,7 +23,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @EnableCaching
@@ -30,6 +31,8 @@ public class CrosswordController {
 
     @Autowired
     private FileService fileService;
+    @Autowired
+    private ListService listService;
     @Autowired
     private CrosswordGeneratorService crosswordGeneratorService;
     @Autowired
@@ -42,7 +45,10 @@ public class CrosswordController {
     }
 
     @PostMapping("/save_crossword")
-    @CacheEvict(value = "crossword", key = "#name")
+    @Caching(evict = {
+            @CacheEvict(value = "crossword", key = "#name"),
+            @CacheEvict(value = "crossword_list", allEntries = true)
+    })
     @ResponseStatus(HttpStatus.CREATED)
     public CrosswordSavedResponse saveCrossword(@RequestParam @NotEmpty String name, @RequestBody @NotNull CrosswordDto crosswordDto) throws IOException {
         Crossword crossword = convertToCrosswordEntity(crosswordDto);
@@ -52,13 +58,16 @@ public class CrosswordController {
     }
 
     @PostMapping("/save_dictionary")
-    @CacheEvict(value = "crossword", key = "#name")
+    @Caching(evict = {
+            @CacheEvict(value = "dictionary", key = "#name"),
+            @CacheEvict(value = "dictionary_list", allEntries = true)
+    })
     @ResponseStatus(HttpStatus.CREATED)
     public DictionarySavedResponse saveDictionary(@RequestParam @NotEmpty String name, @RequestBody @NotNull DictionaryDto dictionaryDto) throws IOException {
         Dictionary dictionary = convertToDictionaryEntity(dictionaryDto);
         dictionary.setName(name);
         fileService.saveDictionaryToFile(dictionary);
-        return new DictionarySavedResponse(name);
+        return new DictionarySavedResponse(dictionary.getName());
     }
 
     @GetMapping("/browse_crossword")
@@ -76,19 +85,27 @@ public class CrosswordController {
     }
 
     @GetMapping("/list_of_crosswords")
-    public ListOfCrosswordsResponse getAllCrosswords(){
-        return new ListOfCrosswordsResponse(List.of("Цветы", "Природа"));
+    @Cacheable(value = "crossword_list")
+    public ListOfCrosswordsResponse getAllCrosswords() throws IOException {
+        return new ListOfCrosswordsResponse(listService.getCrosswordNames());
     }
 
     @GetMapping("/list_of_dictionaries")
-    public ListOfDictsResponse getAllDicts(){
-        return new ListOfDictsResponse(List.of("Природные явления", "Словарь Ожегова"));
+    @Cacheable(value = "dictionary_list")
+    public ListOfDictsResponse getAllDicts() throws IOException {
+        return new ListOfDictsResponse(listService.getDictionariesNames());
     }
 
     @PostMapping("/upload_dictionary")
-    public DictionarySavedResponse uploadDictionary(@RequestParam MultipartFile file) throws IOException {
+    @Caching(evict = {
+            @CacheEvict(value = "dictionary", key = "#name"),
+            @CacheEvict(value = "dictionary_list", allEntries = true)
+    })
+    public DictionarySavedResponse uploadDictionary(@RequestParam MultipartFile file, @RequestParam @NotEmpty String name) throws IOException {
         Dictionary dictionary = fileService.parseFileToDictionary(file);
-        return new DictionarySavedResponse(dictionary.getName());
+        dictionary.setName(name);
+        fileService.saveDictionaryToFile(dictionary);
+        return new DictionarySavedResponse(name);
     }
 
     private CrosswordDto convertToCrosswordDto(Crossword crossword){

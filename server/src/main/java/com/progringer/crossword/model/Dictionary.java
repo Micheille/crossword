@@ -18,6 +18,10 @@ public class Dictionary implements Serializable {
         this.words = new ArrayList<>();
     }
 
+    public Dictionary(){
+        this.words = new ArrayList<>();
+    }
+
     public void addNotion(Notion notion){
         words.add(notion);
     }

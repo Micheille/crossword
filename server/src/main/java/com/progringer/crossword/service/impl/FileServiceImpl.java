@@ -5,6 +5,7 @@ import com.progringer.crossword.model.Crossword;
 import com.progringer.crossword.model.Dictionary;
 import com.progringer.crossword.model.Notion;
 import com.progringer.crossword.service.FileService;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 public class FileServiceImpl implements FileService {
     Path crosswordFiles = Path.of("src","main","resources","static","crosswords");
     Path dictionariesFiles = Path.of("src","main","resources","static","dictionaries");
+    Path infoFiles = Path.of("src","main","resources","static","info");
 
     @Override
     public void saveCrosswordToFile(Crossword crossword) throws IOException {
@@ -77,6 +79,12 @@ public class FileServiceImpl implements FileService {
         }
         return null;
     }
+
+    @Override
+    public ByteArrayResource getInfoFile() throws IOException {
+        return new ByteArrayResource(Files.readAllBytes(infoFiles.resolve("info.html")));
+    }
+
     @Override
     public Crossword browseCrosswordFromFile(Path path) throws IOException, ClassNotFoundException {
         try (ObjectInputStream in = new ObjectInputStream(Files.newInputStream(path))){

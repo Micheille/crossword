@@ -40,7 +40,7 @@ function App() {
                 </>
               )}
               <Route path='/crosswords/new' element={<CrosswordManual />} />
-              <Route path='/dictionaries/*' element={<DictionariesAdmin />} />
+              <Route path='/dictionaries' element={<DictionariesAdmin />} />
             </Routes>
           </div>
         </main>

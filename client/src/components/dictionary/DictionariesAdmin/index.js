@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link, Route, Routes } from 'react-router-dom';
 
 import { Tablist, Tab, Pane } from 'evergreen-ui';
 
@@ -16,7 +15,7 @@ const DictionariesAdmin = () => {
   ]);
 
   return (
-    <section class='admin-dictionaries'>
+    <section className='admin-dictionaries'>
       <Tablist>
         {tabs.map(({ text, link }, index) => (
           <Tab
@@ -26,13 +25,11 @@ const DictionariesAdmin = () => {
             isSelected={index === selectedTabIndex}
             aria-controls={`panel-${text}`}
           >
-            <Link className='admin-dictionaries__tab-link' to={link}>
-              {text}
-            </Link>
+            {text}
           </Tab>
         ))}
       </Tablist>
-
+      {/* 
       <nav className='admin-dictionaries__nav'>
         <ul>
           <li>
@@ -45,16 +42,23 @@ const DictionariesAdmin = () => {
             <Link to='modify'>Изменить</Link>
           </li>
         </ul>
-      </nav>
+      </nav> */}
 
       <div className='admin-dictionaries__container'>
-        <Routes>
+        <Pane
+          display={selectedTabIndex === 0 ? 'flex' : 'none'}
+          flexDirection='column'
+          flexGrow={1}
+        >
+          <MakeDictionary />
+        </Pane>
+        {/* <Routes>
           <Route
             path='/'
             element={<p>Добро пожаловать на страницу работы со словарями!</p>}
           />
           <Route path='/new' element={<MakeDictionary />} />
-        </Routes>
+        </Routes> */}
       </div>
     </section>
   );

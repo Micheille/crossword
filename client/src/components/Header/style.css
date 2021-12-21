@@ -1,0 +1,23 @@
+.header {
+  border-bottom: 1px solid black;
+}
+.header__container {
+  min-width: 768px;
+  width: 768px;
+  margin: 0 auto;
+  padding: 12px 32px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header__logo {
+  margin: 0;
+}
+.header__logo a {
+  display: inline-block;
+}
+.header__nav ul {
+  display: flex;
+  gap: 40px;
+}

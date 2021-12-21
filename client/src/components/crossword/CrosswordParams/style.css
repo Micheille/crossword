@@ -1,0 +1,8 @@
+.params {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+.params__label-line {
+	display: block;
+}

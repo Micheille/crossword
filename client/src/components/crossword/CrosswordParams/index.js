@@ -10,6 +10,7 @@ const CrosswordParams = ({
   setManualStep,
 }) => {
   const [dictNames, setDictNames] = useState([]);
+  const [chosenManualStep, setChosenManualStep] = useState(1);
 
   useEffect(() => {
     fetch('http://localhost:8080/list_of_dictionaries')
@@ -26,7 +27,7 @@ const CrosswordParams = ({
   }, [setDictName]);
 
   const onClickHandle = (e) => {
-    setManualStep(1);
+    setManualStep(chosenManualStep);
   };
 
   return (
@@ -42,7 +43,7 @@ const CrosswordParams = ({
           max={20}
           value={10}
           onChange={(e) => setWidth(e.target.value)}
-        ></input>
+        />
 
         <label htmlFor='height'>Высота:</label>
         <input
@@ -52,7 +53,7 @@ const CrosswordParams = ({
           max={20}
           value={10}
           onChange={(e) => setHeight(e.target.value)}
-        ></input>
+        />
       </div>
 
       <div>
@@ -75,9 +76,9 @@ const CrosswordParams = ({
         <label htmlFor='type' className='params__label-line'>
           Вид составления кроссворда
         </label>
-        <select id='type'>
-          <option>Ручной</option>
-          <option>Автоматический</option>
+        <select id='type' onChange= {(e) => setChosenManualStep(parseInt(e.target.value))}>
+          <option value={1}>Ручной</option>
+          <option value={2}>Автоматический</option>
         </select>
       </div>
 

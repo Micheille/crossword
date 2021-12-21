@@ -1,0 +1,19 @@
+.admin-dictionaries {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.admin-dictionaries__container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+/* .admin-dictionaries__tab-link {
+  text-decoration: none;
+  height: 100%;
+	width: 100%; 
+}*/
+.admin-dictionaries__nav ul {
+  display: flex;
+  justify-content: space-between;
+}

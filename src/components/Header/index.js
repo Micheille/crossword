@@ -31,7 +31,7 @@ const Header = ({ isAuthorized, setIsAuthorized }) => {
                 <Link to='/crosswords'>Кроссворды</Link>
               </li>
               <li>
-                <a href='#'>Словари</a>
+                <Link to='/dictionaries'>Словари</Link>
               </li>
               <li>
                 <a href='#'>Справка</a>

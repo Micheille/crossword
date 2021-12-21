@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { setClassName } from '../../utils/setClassName';
+import { setClassName } from '../../../utils/setClassName';
 
 import './style.css';
 

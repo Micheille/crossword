@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import { CrosswordTable } from '../CrosswordTable';
 
-import { isWordSuitable } from '../../utils/isWordSuitable';
-import { arrayContains } from '../../utils/arrayContains';
-import { words } from '../../utils/mockData';
+import { isWordSuitable } from '../../../utils/isWordSuitable';
+import { arrayContains } from '../../../utils/arrayContains';
 
 import './style.css';
 
@@ -13,21 +12,34 @@ const initialWordAttrsState = '';
 const initialCellsChosenState = [];
 const initialWordChosenState = [];
 
-const MakeCrossword = ({ width, height }) => {
+const MakeCrossword = ({ width, height, dictName }) => {
+  const [dictionary, setDictionary] = useState([]);
   const [wordsWritten, setWordsWritten] = useState(initialWordsWrittenState);
   const [wordAttrs, setWordAttrs] = useState(initialWordAttrsState);
   const [cellsChosen, setCellsChosen] = useState(initialCellsChosenState);
   const [wordChosen, setWordChosen] = useState(initialWordChosenState);
 
+  // useEffect(() => {
+  //   console.log('words written', wordsWritten);
+  // }, [wordsWritten]);
+
   useEffect(() => {
-    console.log('words written', wordsWritten);
-  }, [wordsWritten]);
+    fetch(`http://localhost:8080/browse_dictionary?name=${dictName}`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setDictionary(data.dictionary.words);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [dictName]);
 
   useEffect(() => {
     if (cellsChosen.length) {
       for (let i = 0; i < wordsWritten.length; i++) {
         if (arrayContains(wordsWritten[i], cellsChosen)) {
-          console.log('contains: ', wordsWritten[i], cellsChosen);
           setWordChosen(wordsWritten[i]);
           break;
         }
@@ -42,9 +54,9 @@ const MakeCrossword = ({ width, height }) => {
     }
   }, [cellsChosen]);
 
-  useEffect(() => {
-    console.log('wordChosen: ', wordChosen);
-  }, [wordChosen]);
+  // useEffect(() => {
+  //   console.log('wordChosen: ', wordChosen);
+  // }, [wordChosen]);
 
   const onSelectChange = (event) => {
     cellsChosen.forEach(
@@ -55,7 +67,7 @@ const MakeCrossword = ({ width, height }) => {
   };
 
   return (
-    <section class='crossword-manual'>
+    <section className='crossword-manual'>
       <section className='crossword-manual__table'>
         <CrosswordTable
           width={width}
@@ -67,7 +79,7 @@ const MakeCrossword = ({ width, height }) => {
       </section>
 
       <section className='crossword-manual__info'>
-        <p>Словарь: Название</p>
+        <p>Словарь: {dictName}</p>
 
         <p>Сортировка</p>
 
@@ -84,9 +96,9 @@ const MakeCrossword = ({ width, height }) => {
         </div>
 
         <select size={20} onChange={onSelectChange}>
-          {words
-            .filter((word) => isWordSuitable(word, wordAttrs))
-            .map((word) => (
+          {dictionary
+            .filter(({ word }) => isWordSuitable(word, wordAttrs))
+            .map(({ word }) => (
               <option key={word} value={word}>
                 {word}
               </option>

@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { Header } from '../Header';
 import { Footer } from '../Footer';
-import { CrosswordsUser } from '../CrosswordsUser';
-import { CrosswordsAdmin } from '../СrosswordsAdmin';
+import { CrosswordsUser } from '../crossword/CrosswordsUser';
+import { CrosswordsAdmin } from '../crossword/СrosswordsAdmin';
+import { DictionariesAdmin } from '../dictionary/DictionariesAdmin';
 import { AdminPanel } from '../AdminPanel';
-import { CrosswordManual } from '../CrosswordManual';
+import { CrosswordManual } from '../crossword/CrosswordManual';
 import { AuthForm } from '../AuthForm';
 
 import './App.css';
@@ -39,6 +40,7 @@ function App() {
                 </>
               )}
               <Route path='/crosswords/new' element={<CrosswordManual />} />
+              <Route path='/dictionaries/*' element={<DictionariesAdmin />} />
             </Routes>
           </div>
         </main>

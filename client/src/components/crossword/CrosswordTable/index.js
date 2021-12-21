@@ -15,6 +15,7 @@ const CrosswordTable = ({
   setCellsChosen,
   wordChosen,
   setWordChosen,
+  onCellClick
 }) => {
   const [isMousePressed, setIsMousePressed] = useState(false);
 
@@ -105,7 +106,8 @@ const CrosswordTable = ({
                 onMouseDown={onMouseDownHandle}
                 onMouseOver={onMouseOverHandle}
                 onMouseUp={onMouseUpHandle}
-              ></td>
+                onClick={onCellClick}
+              />
             ))}
           </tr>
         ))}

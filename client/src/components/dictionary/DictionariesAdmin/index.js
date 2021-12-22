@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Tablist, Tab, Pane } from 'evergreen-ui';
 
 import { MakeDictionary } from '../MakeDictionary';
+import { UploadDictionary } from '../UploadDictionary';
+import { ChangeDictionary } from '../ChangeDictionary';
 
 import './style.css';
 
@@ -51,6 +53,22 @@ const DictionariesAdmin = () => {
           flexGrow={1}
         >
           <MakeDictionary />
+        </Pane>
+
+        <Pane
+          display={selectedTabIndex === 1 ? 'flex' : 'none'}
+          flexDirection='column'
+          flexGrow={1}
+        >
+          <UploadDictionary />
+        </Pane>
+
+        <Pane
+          display={selectedTabIndex === 2 ? 'flex' : 'none'}
+          flexDirection='column'
+          flexGrow={1}
+        >
+          <ChangeDictionary />
         </Pane>
         {/* <Routes>
           <Route

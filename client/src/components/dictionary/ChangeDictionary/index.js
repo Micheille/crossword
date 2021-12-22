@@ -127,14 +127,14 @@ const ChangeDictionary = () => {
 
       {dictName ? (
         <>
-          <label className='change-dictionary__label'>
+          <Pane className='change-dictionary__add'>
             <Button
               iconBefore={PlusIcon}
               onClick={() => setIsDialogShown(true)}
             >
               Добавить слово с определением...
             </Button>
-          </label>
+          </Pane>
 
           <div className='change-dictionary__dictionary-container'>
             <DictionaryTable words={words} setWords={setWords} />

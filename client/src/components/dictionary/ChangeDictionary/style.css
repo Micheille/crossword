@@ -2,13 +2,12 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  /* align-items: initial; */
 }
 .change-dictionary__dictionary-container {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
-.change-dictionary__label {
-	text-align: right;
+.change-dictionary__add {
+  text-align: right;
 }

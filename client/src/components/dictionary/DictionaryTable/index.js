@@ -14,16 +14,19 @@ const DictionaryTable = ({ words, setWords }) => {
       </Table.Head>
 
       <Table.VirtualBody className='virtual-body'>
-        {words.map((wordToDelete) => (
-          <Table.Row>
-            <Table.TextCell>{wordToDelete}</Table.TextCell>
-            <Table.TextCell>Определение</Table.TextCell>
+        {words.map(({ word, definition }) => (
+          <Table.Row key={word}>
+            <Table.TextCell>{word}</Table.TextCell>
+            <Table.TextCell>{definition}</Table.TextCell>
             <Table.TextCell>
               <IconButton
+                type='button'
                 icon={TrashIcon}
                 intent='danger'
                 onClick={() =>
-                  setWords(words.filter((word) => word !== wordToDelete))
+                  setWords(
+                    words.filter((wordToDelete) => word !== wordToDelete.word)
+                  )
                 }
               />
             </Table.TextCell>

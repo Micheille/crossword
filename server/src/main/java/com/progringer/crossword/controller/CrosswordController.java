@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 @RestController
+@CrossOrigin
 @EnableCaching
 @Validated
 public class CrosswordController {

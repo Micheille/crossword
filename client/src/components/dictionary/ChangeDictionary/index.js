@@ -5,6 +5,8 @@ import {
   SelectMenu,
   TextInputField,
   Button,
+  PlusIcon,
+  Text,
   Pane,
   InlineAlert,
 } from 'evergreen-ui';
@@ -54,13 +56,6 @@ const ChangeDictionary = () => {
     setIsSaved(false);
   }, [dictName]);
 
-  const makeJSON = () => {
-    return {
-      name: dictName,
-      words: words,
-    };
-  };
-
   const handleDialogConfirm = () => {
     setWords([...words, { word: word, definition: definition }]);
     setIsDialogShown(false);
@@ -86,8 +81,15 @@ const ChangeDictionary = () => {
     e.preventDefault();
   };
 
+  const makeJSON = () => {
+    return {
+      name: dictName,
+      words: words,
+    };
+  };
+
   return (
-    <form className='make-dictionary' onSubmit={handleSubmit}>
+    <form className='change-dictionary' onSubmit={handleSubmit}>
       <Dialog
         isShown={isDialogShown}
         title='Добавление понятия'
@@ -118,25 +120,35 @@ const ChangeDictionary = () => {
         onSelect={(item) => setDictName(item.value)}
         closeOnSelect
       >
-        <Button type='button'>
+        <Button type='button' width='50%'>
           {dictName || 'Изменить словарь понятий...'}
         </Button>
       </SelectMenu>
 
       {dictName ? (
         <>
-          <p>
-            <label>
-              Добавить слово с определением:
-              <button onClick={() => setIsDialogShown(true)}>+</button>
-            </label>
-          </p>
-          <div className='make-dictionary__dictionary-container'>
+          <label className='change-dictionary__label'>
+            <Button
+              iconBefore={PlusIcon}
+              onClick={() => setIsDialogShown(true)}
+            >
+              Добавить слово с определением...
+            </Button>
+          </label>
+
+          <div className='change-dictionary__dictionary-container'>
             <DictionaryTable words={words} setWords={setWords} />
           </div>
         </>
       ) : (
-        <InlineAlert intent='warning'>Словарь не был выбран</InlineAlert>
+        <Pane
+          display='flex'
+          flexGrow={1}
+          alignItems='center'
+          justifyContent='center'
+        >
+          <InlineAlert intent='warning'>Словарь не был выбран</InlineAlert>
+        </Pane>
       )}
 
       <Pane display='flex' flexDirection='row' justifyContent='space-between'>

@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class FileServiceImpl implements FileService {
         Dictionary dictionary = new Dictionary();
         List<Notion> notions = new ArrayList<>();
         try {
-            new BufferedReader(new InputStreamReader(file.getInputStream(), Charset.forName("windows-1251"))).lines().filter(line->line.matches("[\\p{InCyrillic}]+\\s.+")).map(line->line.split("\\s",2)).forEach(x->notions.add(new Notion(x[0], x[1])));
+            new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)).lines().filter(line->line.matches("[\\p{InCyrillic}]+\\s.+")).map(line->line.split("\\s",2)).forEach(x->notions.add(new Notion(x[0], x[1])));
         }
         catch (Exception e){
             throw new DictionaryFileException();

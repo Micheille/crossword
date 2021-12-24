@@ -95,6 +95,7 @@ const CrosswordTable = ({
                 key={x}
                 x={x}
                 y={y}
+                ans = {x}
                 className={setClassName(
                   x,
                   y,

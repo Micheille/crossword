@@ -9,6 +9,8 @@ import { DictionariesAdmin } from '../dictionary/DictionariesAdmin';
 import { AdminPanel } from '../AdminPanel';
 import { CrosswordManual } from '../crossword/CrosswordManual';
 import { AuthForm } from '../AuthForm';
+import { InfoDevelopers } from '../Info/InfoDevelopers';
+import { InfoSystem } from '../Info/InfoSystem';
 
 import './App.css';
 
@@ -41,6 +43,8 @@ function App() {
               )}
               <Route path='/crosswords/new' element={<CrosswordManual />} />
               <Route path='/dictionaries' element={<DictionariesAdmin />} />
+              <Route path='/info' element={<InfoDevelopers />} />
+              <Route path='/info/system' element={<InfoSystem />} />
             </Routes>
           </div>
         </main>

@@ -11,6 +11,7 @@ import { CrosswordManual } from '../crossword/CrosswordManual';
 import { AuthForm } from '../AuthForm';
 
 import './App.css';
+import {SolveCrossword} from "../crossword/SolveCrossword";
 
 function App() {
   const [isAuthorized, setIsAuthorized] = useState(
@@ -40,6 +41,7 @@ function App() {
                 </>
               )}
               <Route path='/crosswords/new' element={<CrosswordManual />} />
+              <Route path='/crosswords/solve/:crossName' element={<SolveCrossword />} />
               <Route path='/dictionaries' element={<DictionariesAdmin />} />
             </Routes>
           </div>

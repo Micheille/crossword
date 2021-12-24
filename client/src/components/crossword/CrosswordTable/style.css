@@ -11,8 +11,19 @@
   text-align: center;
 }
 
+.table__cell_empty {
+  background-color: black;
+}
+
+.table__cell_not-empty {
+  background-color: white;
+}
 .table__cell_selected {
   background-color: aliceblue;
+}
+
+.table__cell_word-selected {
+  background-color: #cce7ff;
 }
 
 .table__cell_chosen {

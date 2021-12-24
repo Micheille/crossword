@@ -78,6 +78,20 @@ const SolveCrossword = ({ crossName }) => {
         }
     }
 
+    const onCheckClick = (e)=>{
+        document.querySelectorAll(".table__cell_word-selected").forEach((el)=>{
+            el.classList.remove("table__cell_word-selected");
+        });
+        document.querySelectorAll(".table__cell_not-empty").forEach((el)=>{
+            el.contentEditable = 'false';
+            if (el.textContent.toLowerCase()==el.ans.toLowerCase()){
+                el.style.backgroundColor = 'green';
+            }
+            else {
+                el.style.backgroundColor = 'red';
+            }
+        });
+    }
     return (
         <section className='crossword-solve'>
             <section className='crossword-solve__table'>
@@ -99,7 +113,7 @@ const SolveCrossword = ({ crossName }) => {
                 <div>
                     <button>Скачать</button>
                     <button>Сохранить</button>
-                    <button>Завершить</button>
+                    <button onClick={onCheckClick}>Завершить</button>
                 </div>
             </section>
         </section>

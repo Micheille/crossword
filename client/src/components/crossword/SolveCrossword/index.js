@@ -3,14 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { CrosswordTable } from '../CrosswordTable';
 
 import './style.css';
+import {useParams} from "react-router-dom";
 
 
-const SolveCrossword = ({ crossName }) => {
+const SolveCrossword = () => {
     const [crossword, setCrossword] = useState([]);
     const [width, setWidth] = useState(10);
     const [height, setHeight] = useState(10);
     const [result, setResult] = useState("");
     const correct = {};
+    const {crossName} = useParams();
     let corAns = 0;
 
     useEffect(() => {

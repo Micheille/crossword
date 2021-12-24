@@ -9,6 +9,9 @@ const SolveCrossword = ({ crossName }) => {
     const [crossword, setCrossword] = useState([]);
     const [width, setWidth] = useState(10);
     const [height, setHeight] = useState(10);
+    const [result, setResult] = useState("");
+    const correct = {};
+    let corAns = 0;
 
     useEffect(() => {
         fetch(`http://localhost:8080/browse_crossword?name=${crossName}`)
@@ -34,9 +37,13 @@ const SolveCrossword = ({ crossName }) => {
                     function (notion) {
                         if (notion.direction==-1) {
                             for (let k = notion.i; k < notion.word.length+notion.i; k++) {
+                                table.item(k).childNodes.item(notion.j).classList.remove("table__cell_empty");
                                 table.item(k).childNodes.item(notion.j).classList.add("table__cell_not-empty");
                                 table.item(k).childNodes.item(notion.j).ans = notion.word[k-notion.i];
                                 table.item(k).childNodes.item(notion.j).key = notion.definition;
+                                if(table.item(k).childNodes.item(notion.j).words==undefined)
+                                    table.item(k).childNodes.item(notion.j).words = [];
+                                table.item(k).childNodes.item(notion.j).words.push(notion.word);
                             }
                         }
                         else{
@@ -44,6 +51,9 @@ const SolveCrossword = ({ crossName }) => {
                                 table.item(notion.i).childNodes.item(k1).classList.add("table__cell_not-empty");
                                 table.item(notion.i).childNodes.item(k1).ans = notion.word[k1-notion.j];
                                 table.item(notion.i).childNodes.item(k1).key = notion.definition;
+                                if(table.item(notion.i).childNodes.item(k1).words == undefined)
+                                    table.item(notion.i).childNodes.item(k1).words = [];
+                                table.item(notion.i).childNodes.item(k1).words.push(notion.word);
                             }
                         }
                     }
@@ -57,13 +67,14 @@ const SolveCrossword = ({ crossName }) => {
 
     const onCellClick = (e)=>{
         if (e.target.key!=undefined) {
-            e.target.contentEditable = 'true';
-            console.log(e.target.textContent);
+            if(e.target.style.backgroundColor!='red'&&e.target.style.backgroundColor!='green')
+                e.target.contentEditable = 'true';
+            console.log(e.target.contentEditable);
             document.querySelectorAll(".table__cell_word-selected").forEach((el)=>{
                 el.classList.remove("table__cell_word-selected");
             });
             document.querySelectorAll(".table__cell_not-empty").forEach((el)=>{
-                if (el.key==e.target.key){
+                if (el.words.includes(e.target.words[e.target.words.length-1])){
                     el.classList.add("table__cell_word-selected");
                 }
             });
@@ -71,7 +82,7 @@ const SolveCrossword = ({ crossName }) => {
         }
         else {
             e.target.classList.remove("table__cell_chosen");
-            document.getElementsByClassName('definitions').item(0).value = "";
+            document.getElementsByClassName('definitions').item(0).value = result;
             document.querySelectorAll(".table__cell_word-selected").forEach((el)=>{
                 el.classList.remove("table__cell_word-selected");
             });
@@ -86,11 +97,22 @@ const SolveCrossword = ({ crossName }) => {
             el.contentEditable = 'false';
             if (el.textContent.toLowerCase()==el.ans.toLowerCase()){
                 el.style.backgroundColor = 'green';
+                if(!(el.key in correct))
+                    correct[el.key]=0;
+                correct[el.key]+=1;
+                if(correct[el.key]==2)
+                    corAns += 1;
             }
             else {
                 el.style.backgroundColor = 'red';
             }
         });
+        document.querySelectorAll(".table__cell_not-empty").forEach((el)=>{
+           el.textContent = el.ans;
+        });
+        setResult("Отгадано:"+corAns+"\nВсего слов:"+crossword.length+"\nВаш результат:"+corAns/crossword.length*100+"%");
+        document.getElementsByClassName('definitions').item(0).value = result;
+        e.target.style.visibility = 'hidden';
     }
     return (
         <section className='crossword-solve'>

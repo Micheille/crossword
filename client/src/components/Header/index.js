@@ -45,7 +45,7 @@ const Header = ({ isAuthorized, setIsAuthorized }) => {
           <nav className='header__nav'>
             <ul>
               <li>
-                <a href='#'>Каталог</a>
+                <Link to='/'>Каталог</Link>
               </li>
               <li>
                 <Link to='/info'>Справка</Link>

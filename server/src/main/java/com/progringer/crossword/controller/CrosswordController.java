@@ -126,10 +126,20 @@ public class CrosswordController {
         return new DictionarySavedResponse(name);
     }
 
-    @Operation(summary = "Получить файл справки")
-    @GetMapping("/get_info")
-    public ResponseEntity<Resource> getInfo() throws IOException {
-        ByteArrayResource resource = fileService.getInfoFile();
+    @Operation(summary = "Получить файл справки админа")
+    @GetMapping("/get_info_admin")
+    public ResponseEntity<Resource> getInfoA() throws IOException {
+        ByteArrayResource resource = fileService.getInfoAdmin();
+        return ResponseEntity.ok()
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
+    @Operation(summary = "Получить файл справки пользователя")
+    @GetMapping("/get_info_user")
+    public ResponseEntity<Resource> getInfoU() throws IOException {
+        ByteArrayResource resource = fileService.getInfoUser();
         return ResponseEntity.ok()
                 .contentLength(resource.contentLength())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

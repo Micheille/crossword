@@ -15,5 +15,6 @@ public interface FileService {
     Crossword browseCrosswordFromFile(Path path) throws IOException, ClassNotFoundException;
     Dictionary browseDictionaryFromFile(String name) throws IOException, ClassNotFoundException;
     Dictionary parseFileToDictionary(MultipartFile file) throws IOException;
-    ByteArrayResource getInfoFile() throws IOException;
+    ByteArrayResource getInfoUser() throws IOException;
+    ByteArrayResource getInfoAdmin() throws IOException;
 }

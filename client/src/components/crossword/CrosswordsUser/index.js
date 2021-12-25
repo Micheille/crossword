@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
 
+import React, { useState } from 'react';
+import {SolveCrossword} from "../SolveCrossword";
+import {Link} from "react-router-dom";
 import { Button } from 'evergreen-ui';
 
 
 const CrosswordsUser = () => {
+  const [crossName, setCrossName] = useState("Общий 15 17");
   const [formData, setFormData] = useState('');
   const [isUploaded, setIsUploaded] = useState(false);
   const handleSubmit = (e) => {
@@ -41,6 +44,9 @@ const CrosswordsUser = () => {
        </form>
        <p id="demo"></p> 
       <p>Выберите кроссворд для разгадывания:</p>
+      <Link to={`/crosswords/solve/${crossName}`}>Общий 15 17</Link>
+
+
 
       <input type='file'></input>   
       
@@ -50,6 +56,7 @@ const CrosswordsUser = () => {
     </section>
     
   );
+
 };
 
 export { CrosswordsUser };

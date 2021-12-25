@@ -1,0 +1,8 @@
+.crossword-solve {
+    display: flex;
+    justify-content: space-between;
+}
+.crossword-solve__info {
+    display: flex;
+    flex-direction: column;
+}

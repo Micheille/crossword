@@ -9,12 +9,20 @@ const GenerateCrossword = ({ width, height, dictName }) => {
     const [crossword, setCrossword] = useState([]);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/generate?n=${width}&m=${height}&dictionary=${dictName}`)
+        fetch(`http://localhost:8080/generate?n=${height}&m=${width}&dictionary=${dictName}`)
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
                 setCrossword(data.crossword.words);
+            })
+            .then(()=>{
+                const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;
+                table.forEach((tr)=>{
+                    tr.childNodes.forEach((td)=>{
+                        td.style = "background-color:black";
+                    })
+                })
             })
             .then(() => {
                 const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;
@@ -22,12 +30,14 @@ const GenerateCrossword = ({ width, height, dictName }) => {
                     function (notion) {
                         if (notion.direction==-1) {
                             for (let k = notion.i; k < notion.word.length+notion.i; k++) {
+                                table.item(k).childNodes.item(notion.j).style = "background-color:white";
                                 table.item(k).childNodes.item(notion.j).textContent = notion.word[k-notion.i];
                                 table.item(k).childNodes.item(notion.j).key = notion.word+": "+notion.definition;
                             }
                         }
                         else{
                             for (let k1 = notion.j; k1 < notion.word.length+notion.j; k1++) {
+                                table.item(notion.i).childNodes.item(k1).style = "background-color:white";
                                 table.item(notion.i).childNodes.item(k1).textContent = notion.word[k1-notion.j];
                                 table.item(notion.i).childNodes.item(k1).key = notion.word+": "+notion.definition;
                             }
@@ -43,6 +53,8 @@ const GenerateCrossword = ({ width, height, dictName }) => {
     const onCellClick = (e)=>{
         if (e.target.key!=undefined)
             document.getElementsByClassName('definitions').item(0).value = e.target.key;
+        else
+            document.getElementsByClassName('definitions').item(0).value = "";
     }
 
     return (

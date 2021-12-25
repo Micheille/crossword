@@ -34,7 +34,7 @@ const Header = ({ isAuthorized, setIsAuthorized }) => {
                 <Link to='/dictionaries'>Словари</Link>
               </li>
               <li>
-                <a href='#'>Справка</a>
+                <Link to='/info'>Справка</Link>
               </li>
               <li>
                 <button onClick={logoutHandler}>Выход</button>
@@ -45,10 +45,10 @@ const Header = ({ isAuthorized, setIsAuthorized }) => {
           <nav className='header__nav'>
             <ul>
               <li>
-                <a href='#'>Каталог</a>
+                <Link to='/'>Каталог</Link>
               </li>
               <li>
-                <a href='#'>Справка</a>
+                <Link to='/info'>Справка</Link>
               </li>
               <li>
                 <Link to='/login'>Вход</Link>

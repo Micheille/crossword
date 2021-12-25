@@ -82,8 +82,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public ByteArrayResource getInfoFile() throws IOException {
-        return new ByteArrayResource(Files.readAllBytes(infoFiles.resolve("info.html")));
+    public ByteArrayResource getInfoAdmin() throws IOException {
+        return new ByteArrayResource(Files.readAllBytes(infoFiles.resolve("infoAdmin.html")));
+    }
+
+    @Override
+    public ByteArrayResource getInfoUser() throws IOException {
+        return new ByteArrayResource(Files.readAllBytes(infoFiles.resolve("infoUser.html")));
     }
 
     @Override

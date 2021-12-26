@@ -42,8 +42,6 @@ const SolveCrossword = () => {
                                 table.item(k).childNodes.item(notion.j).classList.remove("table__cell_empty");
                                 table.item(k).childNodes.item(notion.j).classList.add("table__cell_not-empty");
                                 table.item(k).childNodes.item(notion.j).ans = notion.word[k-notion.i];
-                                /*if(table.item(k).childNodes.item(notion.j).key==k)
-                                    table.item(k).childNodes.item(notion.j).key = 0;//notion.definition;*/
                                 if(table.item(k).childNodes.item(notion.j).words==undefined){
                                     table.item(k).childNodes.item(notion.j).words = [];
                                     table.item(k).childNodes.item(notion.j).defs = [];
@@ -58,8 +56,6 @@ const SolveCrossword = () => {
                             for (let k1 = notion.j; k1 < notion.word.length+notion.j; k1++) {
                                 table.item(notion.i).childNodes.item(k1).classList.add("table__cell_not-empty");
                                 table.item(notion.i).childNodes.item(k1).ans = notion.word[k1-notion.j];
-                                /*if(table.item(notion.i).childNodes.item(k1).key == k1)
-                                    table.item(notion.i).childNodes.item(k1).key = 0;//notion.definition;*/
                                 if(table.item(notion.i).childNodes.item(k1).words == undefined) {
                                     table.item(notion.i).childNodes.item(k1).words = [];
                                     table.item(notion.i).childNodes.item(k1).defs = [];

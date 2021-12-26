@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Dialog,
@@ -10,17 +10,31 @@ import {
 
 import { DictionaryTable } from '../DictionaryTable';
 
-// import { words as mock } from '../../../utils/mockData';
-
 import './style.css';
 
 const MakeDictionary = () => {
   const [isDialogShown, setIsDialogShown] = useState(false);
+  const [dictNames, setDictNames] = useState([]);
   const [dictName, setDictName] = useState('');
   const [word, setWord] = useState('');
   const [definition, setDefinition] = useState('');
   const [words, setWords] = useState([]);
+
   const [isSaved, setIsSaved] = useState(false);
+  const [error, setError] = useState('h');
+
+  useEffect(() => {
+    fetch('http://localhost:8080/list_of_dictionaries')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setDictNames(data.names);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const makeJSON = () => {
     return {
@@ -29,21 +43,32 @@ const MakeDictionary = () => {
     };
   };
 
+  const handleInputDictName = (e) => {
+    setError('');
+    setDictName(e.target.value);
+  };
+
   const handleSubmit = (e) => {
-    fetch(`http://localhost:8080/save_dictionary?name=${dictName}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(makeJSON()),
-    })
-      .then((response) => {
-        if (response.ok) setIsSaved(true);
-        return response.json();
+    if (dictNames.includes(dictName)) {
+      setError('Словарь с таким именем уже существует');
+    } else {
+      setError('');
+
+      fetch(`http://localhost:8080/save_dictionary?name=${dictName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(makeJSON()),
       })
-      .catch((error) => {
-        console.log('error: ', error.message);
-      });
+        .then((response) => {
+          if (response.ok) setIsSaved(true);
+          return response.json();
+        })
+        .catch((error) => {
+          console.log('error: ', error.message);
+        });
+    }
 
     e.preventDefault();
   };
@@ -82,7 +107,7 @@ const MakeDictionary = () => {
           type='text'
           required
           value={dictName}
-          onChange={(e) => setDictName(e.target.value)}
+          onChange={handleInputDictName}
         />
       </label>
 
@@ -105,6 +130,7 @@ const MakeDictionary = () => {
         {isSaved && (
           <InlineAlert intent='success'>Словарь сохранён</InlineAlert>
         )}
+        {error && <InlineAlert intent='danger'>{error}</InlineAlert>}
       </Pane>
     </form>
   );

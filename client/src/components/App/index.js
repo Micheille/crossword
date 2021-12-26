@@ -48,7 +48,7 @@ function App() {
               )}
               <Route path='/crosswords/new' element={<CrosswordManual />} />
               <Route path='/crosswords/solve/:crossName' element={<SolveCrossword />} />
-              <Route path='/dictionaries' element={<DictionariesAdmin />} />
+              <Route path='/dictionaries/*' element={<DictionariesAdmin />} />
               <Route path='/info/systemA' element={<InfoSystemAdmin />} />
               <Route path='/info/systemU' element={<InfoSystemUser />} />
             </Routes>

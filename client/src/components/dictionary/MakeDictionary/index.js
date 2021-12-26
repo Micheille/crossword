@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Dialog,
@@ -10,17 +10,34 @@ import {
 
 import { DictionaryTable } from '../DictionaryTable';
 
-// import { words as mock } from '../../../utils/mockData';
+import { capitalizeFirstLetter } from '../../../utils/capitalizeFirstLetter';
 
 import './style.css';
 
 const MakeDictionary = () => {
   const [isDialogShown, setIsDialogShown] = useState(false);
+  const [dictNames, setDictNames] = useState([]);
   const [dictName, setDictName] = useState('');
   const [word, setWord] = useState('');
   const [definition, setDefinition] = useState('');
   const [words, setWords] = useState([]);
+
   const [isSaved, setIsSaved] = useState(false);
+  const [error, setError] = useState('');
+  const [wordError, setWordError] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:8080/list_of_dictionaries')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setDictNames(data.names);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const makeJSON = () => {
     return {
@@ -29,21 +46,55 @@ const MakeDictionary = () => {
     };
   };
 
+  const handleInputDictName = (e) => {
+    setError('');
+    setIsSaved(false);
+    setDictName(e.target.value);
+  };
+
+  const handleDialogConfirm = () => {
+    if (!(word && definition)) {
+      setWordError('Заполните слово и определение');
+    } else if (
+      words.some((wordAndDef) => wordAndDef.word === word.toUpperCase())
+    ) {
+      setWordError('Такое слово уже записано');
+    } else {
+      setIsSaved(false);
+      setWords([
+        ...words,
+        {
+          word: word.toUpperCase(),
+          definition: capitalizeFirstLetter(definition),
+        },
+      ]);
+      setWord('');
+      setDefinition('');
+      setIsDialogShown(false);
+    }
+  };
+
   const handleSubmit = (e) => {
-    fetch(`http://localhost:8080/save_dictionary?name=${dictName}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(makeJSON()),
-    })
-      .then((response) => {
-        if (response.ok) setIsSaved(true);
-        return response.json();
+    if (dictNames.includes(dictName)) {
+      setError('Словарь с таким именем уже существует');
+    } else {
+      setError('');
+
+      fetch(`http://localhost:8080/save_dictionary?name=${dictName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(makeJSON()),
       })
-      .catch((error) => {
-        console.log('error: ', error.message);
-      });
+        .then((response) => {
+          if (response.ok) setIsSaved(true);
+          return response.json();
+        })
+        .catch((error) => {
+          console.log('error: ', error.message);
+        });
+    }
 
     e.preventDefault();
   };
@@ -54,10 +105,7 @@ const MakeDictionary = () => {
         isShown={isDialogShown}
         title='Добавление понятия'
         onCloseComplete={() => setIsDialogShown(false)}
-        onConfirm={() => {
-          setWords([...words, { word: word, definition: definition }]);
-          setIsDialogShown(false);
-        }}
+        onConfirm={handleDialogConfirm}
         confirmLabel='Добавить'
         cancelLabel='Отмена'
       >
@@ -65,15 +113,23 @@ const MakeDictionary = () => {
           label='Понятие'
           description='Не должно повторяться.'
           value={word}
-          onChange={(e) => setWord(e.target.value)}
+          onChange={(e) => {
+            setWord(e.target.value);
+            setWordError('');
+          }}
         />
 
         <TextInputField
           label='Определение'
           description='Значение слова.'
           value={definition}
-          onChange={(e) => setDefinition(e.target.value)}
+          onChange={(e) => {
+            setDefinition(e.target.value);
+            setWordError('');
+          }}
         />
+
+        {wordError && <InlineAlert intent='danger'>{wordError}</InlineAlert>}
       </Dialog>
 
       <label>
@@ -82,7 +138,7 @@ const MakeDictionary = () => {
           type='text'
           required
           value={dictName}
-          onChange={(e) => setDictName(e.target.value)}
+          onChange={handleInputDictName}
         />
       </label>
 
@@ -105,6 +161,7 @@ const MakeDictionary = () => {
         {isSaved && (
           <InlineAlert intent='success'>Словарь сохранён</InlineAlert>
         )}
+        {error && <InlineAlert intent='danger'>{error}</InlineAlert>}
       </Pane>
     </form>
   );

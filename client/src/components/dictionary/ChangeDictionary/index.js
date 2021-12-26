@@ -6,12 +6,13 @@ import {
   TextInputField,
   Button,
   PlusIcon,
-  Text,
   Pane,
   InlineAlert,
 } from 'evergreen-ui';
 
 import { DictionaryTable } from '../DictionaryTable';
+
+import { capitalizeFirstLetter } from '../../../utils/capitalizeFirstLetter';
 
 import './style.css';
 
@@ -26,6 +27,7 @@ const ChangeDictionary = () => {
   const [definition, setDefinition] = useState('');
 
   const [isSaved, setIsSaved] = useState(false);
+  const [wordError, setWordError] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:8080/list_of_dictionaries')
@@ -57,9 +59,25 @@ const ChangeDictionary = () => {
   }, [dictName]);
 
   const handleDialogConfirm = () => {
-    setWords([...words, { word: word, definition: definition }]);
-    setIsDialogShown(false);
-    setIsSaved(false);
+    if (!(word && definition)) {
+      setWordError('Заполните слово и определение');
+    } else if (
+      words.some((wordAndDef) => wordAndDef.word === word.toUpperCase())
+    ) {
+      setWordError('Такое слово уже записано');
+    } else {
+      setIsSaved(false);
+      setWords([
+        ...words,
+        {
+          word: word.toUpperCase(),
+          definition: capitalizeFirstLetter(definition),
+        },
+      ]);
+      setWord('');
+      setDefinition('');
+      setIsDialogShown(false);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -102,15 +120,23 @@ const ChangeDictionary = () => {
           label='Понятие'
           description='Не должно повторяться.'
           value={word}
-          onChange={(e) => setWord(e.target.value)}
+          onChange={(e) => {
+            setWord(e.target.value);
+            setWordError('');
+          }}
         />
 
         <TextInputField
           label='Определение'
           description='Значение слова.'
           value={definition}
-          onChange={(e) => setDefinition(e.target.value)}
+          onChange={(e) => {
+            setDefinition(e.target.value);
+            setWordError('');
+          }}
         />
+
+        {wordError && <InlineAlert intent='danger'>{wordError}</InlineAlert>}
       </Dialog>
 
       <SelectMenu

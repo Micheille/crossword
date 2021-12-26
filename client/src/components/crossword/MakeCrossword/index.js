@@ -19,10 +19,6 @@ const MakeCrossword = ({ width, height, dictName }) => {
   const [cellsChosen, setCellsChosen] = useState(initialCellsChosenState);
   const [wordChosen, setWordChosen] = useState(initialWordChosenState);
 
-  // useEffect(() => {
-  //   console.log('words written', wordsWritten);
-  // }, [wordsWritten]);
-
   useEffect(() => {
     fetch(`http://localhost:8080/browse_dictionary?name=${dictName}`)
       .then((response) => {

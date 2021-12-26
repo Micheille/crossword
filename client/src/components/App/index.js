@@ -16,6 +16,7 @@ import { InfoSystemUser } from '../Info/InfoSystemUser';
 
 import './App.css';
 import {SolveCrossword} from "../crossword/SolveCrossword";
+import {SolveCrosswordFromFile} from "../crossword/SolveCrosswordFromFile";
 
 function App() {
   const [isAuthorized, setIsAuthorized] = useState(
@@ -48,6 +49,7 @@ function App() {
               )}
               <Route path='/crosswords/new' element={<CrosswordManual />} />
               <Route path='/crosswords/solve/:crossName' element={<SolveCrossword />} />
+              <Route path='/crosswords/solveFile/:formData' element={<SolveCrosswordFromFile />} />
               <Route path='/dictionaries/*' element={<DictionariesAdmin />} />
               <Route path='/info/systemA' element={<InfoSystemAdmin />} />
               <Route path='/info/systemU' element={<InfoSystemUser />} />

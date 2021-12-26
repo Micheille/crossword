@@ -47,20 +47,28 @@ const SolveCrossword = () => {
                                 table.item(k).childNodes.item(notion.j).classList.remove("table__cell_empty");
                                 table.item(k).childNodes.item(notion.j).classList.add("table__cell_not-empty");
                                 table.item(k).childNodes.item(notion.j).ans = notion.word[k-notion.i];
-                                table.item(k).childNodes.item(notion.j).key = notion.definition;
-                                if(table.item(k).childNodes.item(notion.j).words==undefined)
+                                if(table.item(k).childNodes.item(notion.j).words==undefined){
                                     table.item(k).childNodes.item(notion.j).words = [];
-                                table.item(k).childNodes.item(notion.j).words.push(notion.word);
+                                    table.item(k).childNodes.item(notion.j).defs = [];
+                                }
+                                if(table.item(k).childNodes.item(notion.j).words.length<2) {
+                                    table.item(k).childNodes.item(notion.j).words.push(notion.word);
+                                    table.item(k).childNodes.item(notion.j).defs.push(notion.definition);
+                                }
                             }
                         }
                         else{
                             for (let k1 = notion.j; k1 < notion.word.length+notion.j; k1++) {
                                 table.item(notion.i).childNodes.item(k1).classList.add("table__cell_not-empty");
                                 table.item(notion.i).childNodes.item(k1).ans = notion.word[k1-notion.j];
-                                table.item(notion.i).childNodes.item(k1).key = notion.definition;
-                                if(table.item(notion.i).childNodes.item(k1).words == undefined)
+                                if(table.item(notion.i).childNodes.item(k1).words == undefined) {
                                     table.item(notion.i).childNodes.item(k1).words = [];
-                                table.item(notion.i).childNodes.item(k1).words.push(notion.word);
+                                    table.item(notion.i).childNodes.item(k1).defs = [];
+                                }
+                                if(table.item(notion.i).childNodes.item(k1).words.length<2) {
+                                    table.item(notion.i).childNodes.item(k1).words.push(notion.word);
+                                    table.item(notion.i).childNodes.item(k1).defs.push(notion.definition);
+                                }
                             }
                         }
                     }
@@ -73,19 +81,28 @@ const SolveCrossword = () => {
 
 
     const onCellClick = (e)=>{
-        if (e.target.key!=undefined) {
+        if (e.target.words!=undefined) {
+            if(e.target.key==undefined)
+                e.target.key = 0;
+            e.target.key += 1;
             if(e.target.style.backgroundColor!='red'&&e.target.style.backgroundColor!='green')
                 e.target.contentEditable = 'true';
-            console.log(e.target.contentEditable);
+            console.log(e.target.defs);
             document.querySelectorAll(".table__cell_word-selected").forEach((el)=>{
                 el.classList.remove("table__cell_word-selected");
             });
             document.querySelectorAll(".table__cell_not-empty").forEach((el)=>{
-                if (el.words.includes(e.target.words[e.target.words.length-1])){
+                if (el.words.includes(e.target.words[e.target.key%2])){
                     el.classList.add("table__cell_word-selected");
                 }
             });
-            document.getElementsByClassName('definitions').item(0).value = e.target.key;
+            if(e.target.words.length>1) {
+                console.log(e.target.defs);
+                console.log(e.target.key+" "+e.target.key%2 +" "+ e.target.defs[e.target.key % 2]);
+                document.getElementsByClassName('definitions').item(0).value = e.target.defs[e.target.key % 2];
+            }
+            else
+                document.getElementsByClassName('definitions').item(0).value = e.target.defs[0];
         }
         else {
             e.target.classList.remove("table__cell_chosen");
@@ -104,10 +121,10 @@ const SolveCrossword = () => {
             el.contentEditable = 'false';
             if (el.textContent.toLowerCase()==el.ans.toLowerCase()){
                 el.style.backgroundColor = 'green';
-                if(!(el.key in correct))
-                    correct[el.key]=0;
-                correct[el.key]+=1;
-                if(correct[el.key]==2)
+                if(!(el.defs[0] in correct))
+                    correct[el.defs[0]]=0;
+                correct[el.defs[0]]+=1;
+                if(correct[el.defs[0]]==2)
                     corAns += 1;
             }
             else {

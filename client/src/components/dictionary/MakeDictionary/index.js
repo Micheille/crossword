@@ -10,6 +10,8 @@ import {
 
 import { DictionaryTable } from '../DictionaryTable';
 
+import { capitalizeFirstLetter } from '../../../utils/capitalizeFirstLetter';
+
 import './style.css';
 
 const MakeDictionary = () => {
@@ -53,13 +55,18 @@ const MakeDictionary = () => {
   const handleDialogConfirm = () => {
     if (!(word && definition)) {
       setWordError('Заполните слово и определение');
-    } else if (words.some((wordAndDef) => wordAndDef.word === word)) {
+    } else if (
+      words.some((wordAndDef) => wordAndDef.word === word.toUpperCase())
+    ) {
       setWordError('Такое слово уже записано');
     } else {
       setIsSaved(false);
       setWords([
         ...words,
-        { word: word.toUpperCase(), definition: definition },
+        {
+          word: word.toUpperCase(),
+          definition: capitalizeFirstLetter(definition),
+        },
       ]);
       setWord('');
       setDefinition('');

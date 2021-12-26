@@ -6,7 +6,8 @@ import { Button } from 'evergreen-ui';
 
 
 const CrosswordsUser = () => {
-  const [crossName, setCrossName] = useState("Общий 15 17");
+  var res;
+  const [crossName, setCrossName] = useState('');
   const [formData, setFormData] = useState('');
   const [isUploaded, setIsUploaded] = useState(false);
   const handleSubmit = (e) => {
@@ -21,9 +22,13 @@ const CrosswordsUser = () => {
         }
         return response.json();          
         }).then((data) =>{
-          console.log(data);
-          document.getElementById("demo").innerHTML = data.names ; 
-        })    
+          console.log(data);       
+          for (let i = 0; i < data.names.length; i++){
+           
+          
+          document.getElementById("demo").innerHTML += '<p><a href ="/crosswords/solve/' + data.names[i] + '"> ' + data.names[i] + '</a></p>';; 
+          }
+        })   
       .catch((error) => {
         console.log('error: ', error.message);
       });
@@ -44,7 +49,7 @@ const CrosswordsUser = () => {
        </form>
        <p id="demo"></p> 
       <p>Выберите кроссворд для разгадывания:</p>
-      <Link to={`/crosswords/solve/${crossName}`}>Общий 15 17</Link>
+      
 
 
 

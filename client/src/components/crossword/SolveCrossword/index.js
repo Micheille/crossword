@@ -109,6 +109,7 @@ const SolveCrossword = () => {
     }
 
     const onCheckClick = (e)=>{
+        localStorage.removeItem(crossName);
         document.querySelectorAll(".table__cell_word-selected").forEach((el)=>{
             el.classList.remove("table__cell_word-selected");
         });
@@ -131,8 +132,36 @@ const SolveCrossword = () => {
         });
         setResult("Отгадано:"+corAns+"\nВсего слов:"+crossword.length+"\nВаш результат:"+corAns/crossword.length*100+"%");
         document.getElementsByClassName('definitions').item(0).value = result;
+        document.querySelectorAll("button").forEach(el=>el.style.visibility = 'hidden');
+        //e.target.style.visibility = 'hidden';
+    }
+
+    const save = (e)=>{
+        var data = {};
+        document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes
+            .forEach((el, ndx)=>{
+                data[ndx] = [];
+                el.childNodes.forEach((el1, ndx1)=>{
+                    data[ndx][ndx1] = el1.textContent;
+                })
+            });
+        console.log(data);
+        localStorage.setItem(crossName, JSON.stringify(data));
+    }
+
+    const getData = (e)=>{
+        var data = JSON.parse(localStorage.getItem(crossName));
+        const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;
+        console.log(data);
+        for (let el in data){
+            data[el].forEach((el1, ndx1)=>{
+                table.item(parseInt(el)).childNodes.item(ndx1).textContent = el1;
+            })
+            console.log(data[el]);
+        };
         e.target.style.visibility = 'hidden';
     }
+
     return (
         <section className='crossword-solve'>
             <section className='crossword-solve__table'>
@@ -152,9 +181,9 @@ const SolveCrossword = () => {
                 <textarea className="definitions" rows={20} cols={33} readOnly={true}/>
 
                 <div>
-                    <button>Скачать</button>
-                    <button>Сохранить</button>
+                    <button onClick={save}>Сохранить</button>
                     <button onClick={onCheckClick}>Завершить</button>
+                    <button onClick={getData}>Продолжить разгадывание</button>
                 </div>
             </section>
         </section>

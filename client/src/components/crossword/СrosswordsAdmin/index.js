@@ -35,7 +35,7 @@ const CrosswordsAdmin = () => {
     e.preventDefault();
   };
   return (
-    <section class='admin-crosswords'>
+    <section className='admin-crosswords'>
       <Link to='new'>Создать новый кроссворд</Link>
 
       <p>Выберите кроссворд для изменения:</p>

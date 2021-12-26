@@ -6,6 +6,8 @@ const UploadDictionary = () => {
   const [formData, setFormData] = useState('');
   const [isUploaded, setIsUploaded] = useState(false);
 
+  const [error, setError] = useState('');
+
   const handleFilePickerChange = (files) => {
     setIsUploaded(false);
 
@@ -15,28 +17,35 @@ const UploadDictionary = () => {
     setFormData(formData);
   };
 
-  useEffect(() => {
-    console.log('file: ', formData);
-  }, [formData]);
-
   const handleSubmit = (e) => {
     const fileName = formData.get('file').name;
     const name = fileName.substring(0, fileName.length - 5);
 
-    fetch(`http://localhost:8080/upload_dictionary?name=${name}`, {
-      method: 'POST',
-      body: formData,
-    })
-      .then((response) => {
-        if (response.ok) {
-          setIsUploaded(true);
-        }
-
-        return response.json();
+    try {
+      fetch(`http://localhost:8080/upload_dictionary?name=${name}`, {
+        method: 'POST',
+        body: formData,
       })
-      .catch((error) => {
-        console.log('error: ', error.message);
-      });
+        .then((response) => {
+          console.log('responce: ', response);
+          if (response.ok) {
+            setIsUploaded(true);
+          }
+
+          return response.json();
+        })
+        .then((json) => setError(json.message))
+        .catch((error) => {
+          // if (e.response && e.response.data) {
+          //   console.log(e.response.data.message); // some reason error message
+          // }
+          console.log('error: ', error);
+          // console.log('error.responce: ', error.response);
+          // console.log('error.responce.data: ', error.responce.data);
+        });
+    } catch (error) {
+      console.log('error 2');
+    }
 
     e.preventDefault();
   };
@@ -59,6 +68,7 @@ const UploadDictionary = () => {
           {isUploaded && (
             <InlineAlert intent='success'>Словарь загружён</InlineAlert>
           )}
+          {error && <InlineAlert intent='danger'>{error}</InlineAlert>}
         </Pane>
       </Pane>
     </form>

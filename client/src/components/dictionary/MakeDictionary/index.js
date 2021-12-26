@@ -22,6 +22,7 @@ const MakeDictionary = () => {
 
   const [isSaved, setIsSaved] = useState(false);
   const [error, setError] = useState('');
+  const [wordError, setWordError] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:8080/list_of_dictionaries')
@@ -50,9 +51,20 @@ const MakeDictionary = () => {
   };
 
   const handleDialogConfirm = () => {
-    setIsSaved(false);
-    setWords([...words, { word: word, definition: definition }]);
-    setIsDialogShown(false);
+    if (!(word && definition)) {
+      setWordError('Заполните слово и определение');
+    } else if (words.some((wordAndDef) => wordAndDef.word === word)) {
+      setWordError('Такое слово уже записано');
+    } else {
+      setIsSaved(false);
+      setWords([
+        ...words,
+        { word: word.toUpperCase(), definition: definition },
+      ]);
+      setWord('');
+      setDefinition('');
+      setIsDialogShown(false);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -94,15 +106,23 @@ const MakeDictionary = () => {
           label='Понятие'
           description='Не должно повторяться.'
           value={word}
-          onChange={(e) => setWord(e.target.value)}
+          onChange={(e) => {
+            setWord(e.target.value);
+            setWordError('');
+          }}
         />
 
         <TextInputField
           label='Определение'
           description='Значение слова.'
           value={definition}
-          onChange={(e) => setDefinition(e.target.value)}
+          onChange={(e) => {
+            setDefinition(e.target.value);
+            setWordError('');
+          }}
         />
+
+        {wordError && <InlineAlert intent='danger'>{wordError}</InlineAlert>}
       </Dialog>
 
       <label>

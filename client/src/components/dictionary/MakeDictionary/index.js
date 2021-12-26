@@ -21,7 +21,7 @@ const MakeDictionary = () => {
   const [words, setWords] = useState([]);
 
   const [isSaved, setIsSaved] = useState(false);
-  const [error, setError] = useState('h');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:8080/list_of_dictionaries')
@@ -45,7 +45,14 @@ const MakeDictionary = () => {
 
   const handleInputDictName = (e) => {
     setError('');
+    setIsSaved(false);
     setDictName(e.target.value);
+  };
+
+  const handleDialogConfirm = () => {
+    setIsSaved(false);
+    setWords([...words, { word: word, definition: definition }]);
+    setIsDialogShown(false);
   };
 
   const handleSubmit = (e) => {
@@ -79,10 +86,7 @@ const MakeDictionary = () => {
         isShown={isDialogShown}
         title='Добавление понятия'
         onCloseComplete={() => setIsDialogShown(false)}
-        onConfirm={() => {
-          setWords([...words, { word: word, definition: definition }]);
-          setIsDialogShown(false);
-        }}
+        onConfirm={handleDialogConfirm}
         confirmLabel='Добавить'
         cancelLabel='Отмена'
       >

@@ -19,7 +19,7 @@ const CrosswordsUser = () => {
       .then((response) => {
         if (response.ok) {
           setIsUploaded(true);
-        }
+        }        
         return response.json();          
         }).then((data) =>{
           console.log(data);       
@@ -31,6 +31,7 @@ const CrosswordsUser = () => {
         })   
       .catch((error) => {
         console.log('error: ', error.message);
+        
       });
     
 

@@ -11,6 +11,7 @@ const SolveCrossword = () => {
     const [width, setWidth] = useState(10);
     const [height, setHeight] = useState(10);
     const [result, setResult] = useState("");
+    const [isUploaded, setIsUploaded] = useState(false);
     const correct = {};
     const {crossName} = useParams();
     let corAns = 0;
@@ -18,6 +19,10 @@ const SolveCrossword = () => {
     useEffect(() => {
         fetch(`http://localhost:8080/browse_crossword?name=${crossName}`)
             .then((response) => {
+                if (response.ok) {
+                    setIsUploaded(true);
+                  }
+                  else alert(response.message);
                 return response.json();
             })
             .then((data) => {

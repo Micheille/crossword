@@ -41,6 +41,7 @@ const CrosswordParams = ({
           type='number'
           min={10}
           max={20}
+          placeholder={10}
           onChange={(e) => setWidth(e.target.value)}
         />
 
@@ -50,6 +51,7 @@ const CrosswordParams = ({
           type='number'
           min={10}
           max={20}
+          placeholder={10}
           onChange={(e) => setHeight(e.target.value)}
         />
       </div>

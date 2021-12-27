@@ -81,6 +81,7 @@ const GenerateCrossword = ({ width, height, dictName }) => {
     }
     const download = (e) => {
         var pom = document.createElement('a');
+        respCross.name = crossName;
         pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(respCross)));
         pom.setAttribute('download', crossName+'.kros');
 

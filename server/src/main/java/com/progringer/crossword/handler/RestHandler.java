@@ -1,5 +1,7 @@
 package com.progringer.crossword.handler;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.progringer.crossword.exception.DictionaryFileException;
 import com.progringer.crossword.response.DefaultErrorResponse;
 import lombok.extern.log4j.Log4j2;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.NoSuchFileException;
@@ -58,6 +61,12 @@ public class RestHandler {
     @ResponseBody
     public DefaultErrorResponse handleMethodArgumentNotValidException(Exception ex){
         return new DefaultErrorResponse(ex.getMessage());
+    }
+    @ExceptionHandler({JsonParseException.class, JsonMappingException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public DefaultErrorResponse fileHasWrongFormat(IOException e){
+        return new DefaultErrorResponse("К сожалению, файл поврежден. Попробуйте загрузить другой кроссворд.");
     }
 
 }

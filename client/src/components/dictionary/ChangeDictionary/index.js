@@ -119,7 +119,11 @@ const ChangeDictionary = () => {
       <Dialog
         isShown={isDialogShown}
         title='Добавление понятия'
-        onCloseComplete={() => setIsDialogShown(false)}
+        onCloseComplete={() => {
+          setIsDialogShown(false);
+          setWord('');
+          setDefinition('');
+        }}
         onConfirm={handleDialogConfirm}
         confirmLabel='Добавить'
         cancelLabel='Отмена'

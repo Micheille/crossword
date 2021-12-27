@@ -59,6 +59,12 @@ const MakeDictionary = () => {
       words.some((wordAndDef) => wordAndDef.word === word.toUpperCase())
     ) {
       setWordError('Такое слово уже записано');
+    } else if (!/^([а-яА-ЯёЁ])+$/.test(word)) {
+      setWordError(
+        'Слово должно быть единственным и содержать только кириллицу'
+      );
+    } else if (!/^([^a-zA-Z])+$/.test(definition)) {
+      setWordError('Определение не должно содержать латиницу');
     } else {
       setIsSaved(false);
       setWords([

@@ -1,5 +1,6 @@
 package com.progringer.crossword.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.progringer.crossword.exception.DictionaryFileException;
 import com.progringer.crossword.model.Crossword;
 import com.progringer.crossword.model.Dictionary;
@@ -79,6 +80,12 @@ public class FileServiceImpl implements FileService {
             return dictionary;
         }
         return null;
+    }
+
+    @Override
+    public Crossword parseFileToCrossword(MultipartFile file) throws IOException {
+        Crossword crossword = new ObjectMapper().readValue(file.getInputStream(),Crossword.class);
+        return crossword;
     }
 
     @Override

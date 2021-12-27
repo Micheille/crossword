@@ -18,10 +18,10 @@ const SolveCrosswordFromFile = ({ data }) => {
 
     useEffect(() => {
 
-        setCrossword(data.crossword.words);
-        setWidth(data.crossword.m);
-        setHeight(data.crossword.n);
-        setCrossName(data.crossword.name);
+        setCrossword(data.words);
+        setWidth(data.m);
+        setHeight(data.n);
+        setCrossName(data.name);
 
         const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;
         table.forEach((tr)=>{

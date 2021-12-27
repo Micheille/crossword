@@ -58,6 +58,54 @@ const ChangeDictionary = () => {
     setIsSaved(false);
   }, [dictName]);
 
+  const handleDownload = () => {
+    console.log('download');
+    const data = 'some file data\nand one else';
+    const filename = 'text.txt';
+
+    var file = new Blob([data], { type: 'text/plain' });
+    // IE10+
+    if (window.navigator.msSaveOrOpenBlob)
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    else {
+      // Others
+      var a = document.createElement('a'),
+        url = URL.createObjectURL(file);
+      url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
+    }
+  };
+
+  // const download = (data, filename) => {
+  //   console.log('download');
+
+  //   var file = new Blob([data], { type: 'text/plain' });
+  //   // IE10+
+  //   if (window.navigator.msSaveOrOpenBlob)
+  //     window.navigator.msSaveOrOpenBlob(file, filename);
+  //   else {
+  //     // Others
+  //     var a = document.createElement('a'),
+  //       url = URL.createObjectURL(file);
+  //     url = URL.createObjectURL(file);
+  //     a.href = url;
+  //     a.download = filename;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     setTimeout(function () {
+  //       document.body.removeChild(a);
+  //       window.URL.revokeObjectURL(url);
+  //     }, 0);
+  //   }
+  // };
+
   const handleDialogConfirm = () => {
     if (!(word && definition)) {
       setWordError('Заполните слово и определение');
@@ -89,20 +137,21 @@ const ChangeDictionary = () => {
   };
 
   const handleSubmit = (e) => {
-    fetch(`http://localhost:8080/save_dictionary?name=${dictName}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(makeJSON()),
-    })
-      .then((response) => {
-        if (response.ok) setIsSaved(true);
-        return response.json();
+    if (dictName)
+      fetch(`http://localhost:8080/save_dictionary?name=${dictName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(makeJSON()),
       })
-      .catch((error) => {
-        console.log('error: ', error.message);
-      });
+        .then((response) => {
+          if (response.ok) setIsSaved(true);
+          return response.json();
+        })
+        .catch((error) => {
+          console.log('error: ', error.message);
+        });
 
     e.preventDefault();
   };
@@ -195,10 +244,14 @@ const ChangeDictionary = () => {
             Сохранить
           </Button>
 
-          <Button type='button' alignSelf='left'>
+          {/* <a href='#' id='download'>
             Скачать
-          </Button>
+          </a> */}
         </Pane>
+
+        <Button type='button' alignSelf='left' onClick={handleDownload}>
+          Скачать
+        </Button>
 
         {isSaved && (
           <InlineAlert intent='success'>Словарь сохранён</InlineAlert>

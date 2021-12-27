@@ -128,7 +128,7 @@ public class CrosswordController {
     }
 
     @Operation(summary = "Получение из файла с кроссвордом объекта типа Кроссворд")
-    @GetMapping("/parse_crossword_file")
+    @PostMapping("/parse_crossword_file")
     public CrosswordBrowsedResponse parseCrosswordFile(@Parameter(description = "Файл кроссворда, запись внутри в формате JSON") @RequestParam MultipartFile file) throws IOException, ParseException {
         Crossword crossword = fileService.parseFileToCrossword(file);
         return new CrosswordBrowsedResponse(convertToCrosswordDto(crossword));

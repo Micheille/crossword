@@ -14,6 +14,7 @@ const CrosswordsUser = () => {
   const [isUploadedFile, setIsUploadedFile] = useState(false);
   const [isDialogShown, setIsDialogShown] = useState(false);
   const [error, setError] = useState('');
+  const [isKostil, setIsKostil] = useState(false);
 
   const handleSubmit = (e) => {
 
@@ -47,12 +48,12 @@ const CrosswordsUser = () => {
         .then((response) => {
           console.log('responce: ', response);
           if (response.ok) {
-            setIsUploaded(true);
+            setIsUploadedFile(true);
           }
           return response.json();
         })
         .then((data) => {
-            setCrossword(data);
+            setCrossword(data.crossword);
         })
         .catch((error) => {
           console.log('error: ', error);
@@ -60,11 +61,12 @@ const CrosswordsUser = () => {
   };
 
   const handleFilePickerChange = (files) => {
-    setIsUploaded(false);
-
+    setIsUploadedFile(false);
     const formData = new FormData();
     formData.append('file', files[0]);
     setFormData(formData);
+    console.log('formData: ', formData);
+
   };
 
   useEffect(() => {
@@ -73,15 +75,15 @@ const CrosswordsUser = () => {
 
   const handleFileSubmit = (e) => {
     fetchUploadCrossword();
+    if (crossword != []) setIsKostil(true);
     console.log('crossword: ', crossword);
-    setIsUploadedFile(true);
   };
 
   return (
-    if(isUploadedFile){
-        <SolveCrosswordFromFile data={crossword}  />
-    }
-    else{
+  <div>
+        {isKostil ?
+            (<SolveCrosswordFromFile  data={crossword}  />
+        ) : (
         <section>
           <p>Выберите кроссворд для разгадывания:</p>
           <button onClick={() => setIsDialogShown(true)}>Из файла:</button>
@@ -100,7 +102,6 @@ const CrosswordsUser = () => {
                   onChange={handleFilePickerChange}
                   placeholder='Выберите файл .kros...'
                 />
-                    <p id="buttonFile"></p>
                   {isUploadedFile && (
                     <InlineAlert intent='success'>Кроссворд загружен</InlineAlert>
                   )}
@@ -112,7 +113,8 @@ const CrosswordsUser = () => {
            </form>
            <p id="demo"></p>
         </section>
-    }
+        )}
+  </div>
   )
 
 

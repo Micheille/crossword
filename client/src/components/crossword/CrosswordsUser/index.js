@@ -1,20 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
 import {SolveCrossword} from "../SolveCrossword";
+import { SolveCrosswordFromFile } from "../SolveCrosswordFromFile";
 import {Link} from "react-router-dom";
 import { Dialog, FilePicker, Button, InlineAlert, Pane } from 'evergreen-ui';
 
 
 const CrosswordsUser = () => {
   var res;
-  const [crossName, setCrossName] = useState('');
   const [formData, setFormData] = useState('');
+  const [crossword, setCrossword] = useState([]);
   const [isUploaded, setIsUploaded] = useState(false);
   const [isUploadedFile, setIsUploadedFile] = useState(false);
   const [isDialogShown, setIsDialogShown] = useState(false);
-  const [crossword, setCrossword] = useState([]);
-  const [width, setWidth] = useState(10);
-  const [height, setHeight] = useState(10);
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
@@ -41,9 +39,9 @@ const CrosswordsUser = () => {
       e.preventDefault();
   };
 
-  const fetchUploadCrossword = (data) => {
-      fetch('http://localhost:8080/parse_crossword_file?file=${data}', {
-          method: 'GET',
+  const fetchUploadCrossword = () => {
+      fetch('http://localhost:8080/parse_crossword_file', {
+          method: 'POST',
           body: formData,
         })
         .then((response) => {
@@ -53,7 +51,9 @@ const CrosswordsUser = () => {
           }
           return response.json();
         })
-        .then((json) => setError(json.message))
+        .then((data) => {
+            setCrossword(data);
+        })
         .catch((error) => {
           console.log('error: ', error);
         });
@@ -64,7 +64,6 @@ const CrosswordsUser = () => {
 
     const formData = new FormData();
     formData.append('file', files[0]);
-
     setFormData(formData);
   };
 
@@ -73,49 +72,49 @@ const CrosswordsUser = () => {
     }, [formData]);
 
   const handleFileSubmit = (e) => {
-    fetchUploadCrossword(formData);
-
-
+    fetchUploadCrossword();
+    console.log('crossword: ', crossword);
+    setIsUploadedFile(true);
   };
- 
 
   return (
-   
-    <section>
+    if(isUploadedFile){
+        <SolveCrosswordFromFile data={crossword}  />
+    }
+    else{
+        <section>
+          <p>Выберите кроссворд для разгадывания:</p>
+          <button onClick={() => setIsDialogShown(true)}>Из файла:</button>
+            <Dialog
+                isShown={isDialogShown}
+                title='Загрузка из файла'
+                onCloseComplete={() => setIsDialogShown(false)}
+                onConfirm={handleFileSubmit}
+            >
+              <Pane width={350}>
+                <FilePicker
+                  required
+                  name='file-picker'
+                  accept='.kros'
+                  width='100%'
+                  onChange={handleFilePickerChange}
+                  placeholder='Выберите файл .kros...'
+                />
+                    <p id="buttonFile"></p>
+                  {isUploadedFile && (
+                    <InlineAlert intent='success'>Кроссворд загружен</InlineAlert>
+                  )}
+              </Pane>
+            </Dialog>
+            <p></p>
+            <form onSubmit={handleSubmit}>
+           <Button type='submit'>Показать готовые кроссворды</Button>
+           </form>
+           <p id="demo"></p>
+        </section>
+    }
+  )
 
-      <p>Выберите кроссворд для разгадывания:</p>
-
-      <button onClick={() => setIsDialogShown(true)}>Из файла:</button>
-        <Dialog
-            isShown={isDialogShown}
-            title='Загрузка из файла'
-            onCloseComplete={() => setIsDialogShown(false)}
-            onConfirm={handleFileSubmit}
-        >
-          <Pane width={350}>
-            <FilePicker
-              required
-              name='file-picker'
-              accept='.kros'
-              width='100%'
-              onChange={handleFilePickerChange}
-              placeholder='Выберите файл .kros...'
-            />
-                <p id="buttonFile"></p>
-              {isUploadedFile && (
-                <InlineAlert intent='success'>Кроссворд загружен</InlineAlert>
-              )}
-          </Pane>
-        </Dialog>
-        <p></p>
-        <form onSubmit={handleSubmit}>
-       <Button type='submit'>Показать готовые кроссворды</Button>
-       </form>
-       <p id="demo"></p>
-
-    </section>
-    
-  );
 
 };
 

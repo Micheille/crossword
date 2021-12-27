@@ -6,27 +6,22 @@ import './style.css';
 import {useParams} from "react-router-dom";
 
 
-const SolveCrosswordFromFile = () => {
+const SolveCrosswordFromFile = ({ data }) => {
     const [crossword, setCrossword] = useState([]);
     const [width, setWidth] = useState(10);
     const [height, setHeight] = useState(10);
     const [result, setResult] = useState("");
     const [isUploaded, setIsUploaded] = useState(false);
+    const [crossName, setCrossName] = useState("");
     const correct = {};
-    const crossName = useState("");
-    const {formData} = useParams();
     let corAns = 0;
 
     useEffect(() => {
-        const data = {};
-        formData.forEach((value, key) => (data[key] = value));
-        console.log('file: ', data);
-        const fileName = formData.get('file').name;
-        const crossName = fileName.substring(0, fileName.length - 5);
 
         setCrossword(data.crossword.words);
         setWidth(data.crossword.m);
         setHeight(data.crossword.n);
+        setCrossName(data.crossword.name);
 
         const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;
         table.forEach((tr)=>{

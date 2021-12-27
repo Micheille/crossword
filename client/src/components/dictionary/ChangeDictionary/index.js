@@ -58,29 +58,37 @@ const ChangeDictionary = () => {
     setIsSaved(false);
   }, [dictName]);
 
-  const handleDownload = () => {
-    console.log('download');
-    const data = 'some file data\nand one else';
-    const filename = 'text.txt';
+  const handleDownloadDictionary = () => {
+    let data = '';
 
-    var file = new Blob([data], { type: 'text/plain' });
-    // IE10+
-    if (window.navigator.msSaveOrOpenBlob)
-      window.navigator.msSaveOrOpenBlob(file, filename);
-    else {
-      // Others
-      var a = document.createElement('a'),
+    if (dictName) {
+      words.forEach(({ word, definition }) => {
+        data += `${word} ${definition}\n`;
+      });
+
+      const filename = `${dictName}.dict`;
+
+      var file = new Blob([data], { type: 'text/plain' });
+      // IE10+
+      if (window.navigator.msSaveOrOpenBlob)
+        window.navigator.msSaveOrOpenBlob(file, filename);
+      else {
+        // Others
+        var a = document.createElement('a'),
+          url = URL.createObjectURL(file);
         url = URL.createObjectURL(file);
-      url = URL.createObjectURL(file);
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function () {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      }, 0);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 0);
+      }
     }
+
+    // data = 'some file data\nand one else';
   };
 
   // const download = (data, filename) => {
@@ -249,7 +257,11 @@ const ChangeDictionary = () => {
           </a> */}
         </Pane>
 
-        <Button type='button' alignSelf='left' onClick={handleDownload}>
+        <Button
+          type='button'
+          alignSelf='left'
+          onClick={handleDownloadDictionary}
+        >
           Скачать
         </Button>
 

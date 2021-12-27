@@ -58,7 +58,7 @@ const MakeDictionary = () => {
     } else if (
       words.some((wordAndDef) => wordAndDef.word === word.toUpperCase())
     ) {
-      setWordError('Такое слово уже записано');
+      setWordError('Слово уже записано');
     } else if (!/^([а-яА-ЯёЁ])+$/.test(word)) {
       setWordError(
         'Слово должно быть единственным и содержать только кириллицу'
@@ -149,7 +149,9 @@ const MakeDictionary = () => {
           required
           value={dictName}
           onChange={handleInputDictName}
-        />
+          pattern='[а-яА-ЯёЁ0-9_ -]+'
+          title='Допускаются кириллица, цифры, пробел и знаки _, -'
+        ></input>
       </label>
 
       <p>

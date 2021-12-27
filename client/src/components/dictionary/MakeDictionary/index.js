@@ -25,7 +25,8 @@ const MakeDictionary = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [error, setError] = useState('');
   const [wordError, setWordError] = useState('');
-
+  var m= new RegExp('[a-z]+');
+  var n= new RegExp('[0-9]+');
   useEffect(() => {
     fetch('http://localhost:8080/list_of_dictionaries')
       .then((response) => {
@@ -59,7 +60,15 @@ const MakeDictionary = () => {
       words.some((wordAndDef) => wordAndDef.word === word.toUpperCase())
     ) {
       setWordError('Такое слово уже записано');
-    } else {
+    } else if (
+      m.test(word)
+    ) { setWordError('Выбран неправильный язык');
+
+    }else if (
+      n.test(word)
+    ) { setWordError('Введены цифры');
+
+    }else {
       setIsSaved(false);
       setWords([
         ...words,

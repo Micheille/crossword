@@ -11,6 +11,7 @@ import com.progringer.crossword.service.FileService;
 import com.progringer.crossword.service.ListService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import org.apache.tomcat.util.json.ParseException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -124,6 +125,13 @@ public class CrosswordController {
         dictionary.setName(name);
         fileService.saveDictionaryToFile(dictionary);
         return new DictionarySavedResponse(name);
+    }
+
+    @Operation(summary = "Получение из файла с кроссвордом объекта типа Кроссворд")
+    @GetMapping("/parse_crossword_file")
+    public CrosswordBrowsedResponse parseCrosswordFile(@Parameter(description = "Файл кроссворда, запись внутри в формате JSON") @RequestParam MultipartFile file) throws IOException, ParseException {
+        Crossword crossword = fileService.parseFileToCrossword(file);
+        return new CrosswordBrowsedResponse(convertToCrosswordDto(crossword));
     }
 
     @Operation(summary = "Получить файл справки админа")

@@ -2,11 +2,13 @@ package com.progringer.crossword.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class WordInCrossword implements Serializable {
     private String word;
     private int i, j; //координаты первой буквы на сетке

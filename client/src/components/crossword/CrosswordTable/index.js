@@ -15,7 +15,7 @@ const CrosswordTable = ({
   setCellsChosen,
   wordChosen,
   setWordChosen,
-  onCellClick
+  onCellClick,
 }) => {
   const [isMousePressed, setIsMousePressed] = useState(false);
 
@@ -23,7 +23,6 @@ const CrosswordTable = ({
   const [cellSelectTo, setCellSelectTo] = useState(initialCellState);
 
   const onMouseDownHandle = (event) => {
-    setWordChosen([]);
     setIsMousePressed(true);
 
     setCellSelectFrom({
@@ -95,9 +94,9 @@ const CrosswordTable = ({
                 key={x}
                 x={x}
                 y={y}
-                ans = {x}
-                words = {[]}
-                defs = {[]}
+                ans={x}
+                words={[]}
+                defs={[]}
                 className={setClassName(
                   x,
                   y,

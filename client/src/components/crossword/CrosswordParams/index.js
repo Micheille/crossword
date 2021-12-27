@@ -3,7 +3,9 @@ import React, { useState, useEffect } from 'react';
 import './style.css';
 
 const CrosswordParams = ({
+  width,
   setWidth,
+  height,
   setHeight,
   dictName,
   setDictName,
@@ -41,7 +43,8 @@ const CrosswordParams = ({
           type='number'
           min={10}
           max={20}
-          placeholder={10}
+          value={width}
+          placeholder='от 10 до 20'
           onChange={(e) => setWidth(e.target.value)}
         />
 
@@ -51,7 +54,7 @@ const CrosswordParams = ({
           type='number'
           min={10}
           max={20}
-          placeholder={10}
+          value={height}
           onChange={(e) => setHeight(e.target.value)}
         />
       </div>
@@ -76,7 +79,10 @@ const CrosswordParams = ({
         <label htmlFor='type' className='params__label-line'>
           Вид составления кроссворда
         </label>
-        <select id='type' onChange= {(e) => setChosenManualStep(parseInt(e.target.value))}>
+        <select
+          id='type'
+          onChange={(e) => setChosenManualStep(parseInt(e.target.value))}
+        >
           <option value={1}>Ручной</option>
           <option value={2}>Автоматический</option>
         </select>

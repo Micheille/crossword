@@ -15,6 +15,7 @@ const CrosswordsUser = () => {
   const [crossword, setCrossword] = useState([]);
   const [width, setWidth] = useState(10);
   const [height, setHeight] = useState(10);
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
 
@@ -40,58 +41,40 @@ const CrosswordsUser = () => {
       e.preventDefault();
   };
 
+  const fetchUploadCrossword = (data) => {
+      fetch('http://localhost:8080/parse_crossword_file?file=${data}', {
+          method: 'GET',
+          body: formData,
+        })
+        .then((response) => {
+          console.log('responce: ', response);
+          if (response.ok) {
+            setIsUploaded(true);
+          }
+          return response.json();
+        })
+        .then((json) => setError(json.message))
+        .catch((error) => {
+          console.log('error: ', error);
+        });
+  };
+
   const handleFilePickerChange = (files) => {
-    setIsUploadedFile(false);
-
-    var reader = new FileReader();
-    reader.onload = function(event) {
-      var contents = event.target.result;
-      console.log("Содержимое файла: " + contents);
-    };
-
-    reader.onerror = function(event) {
-      console.error("Файл не может быть прочитан! код " + event.target.error.code);
-    };
-
+    setIsUploaded(false);
 
     const formData = new FormData();
     formData.append('file', files[0]);
+
     setFormData(formData);
-
-    /*const data = {};
-    formData.forEach((value, key) => (data[key] = value));*/
-
-    const data = formDataToJSON(formData);
-    console.log('data: ', data);
-
-    setCrossword(data.crossword.words);
-    setWidth(data.crossword.m);
-    setHeight(data.crossword.n);
-
-
-
-    function formDataToJSON(formData){
-        var ConvertedJSON= {};
-        for (const [key, value]  of formData.entries())
-        {
-            ConvertedJSON[key] = value;
-        }
-        return ConvertedJSON
-    }
   };
 
-
-
   useEffect(() => {
-    console.log('formData: ', formData);
-  }, [formData]);
+      setError('');
+    }, [formData]);
 
   const handleFileSubmit = (e) => {
-    const fileName = formData.get('file').name;
-    const name = fileName.substring(0, fileName.length - 5);
-    console.log('fileName: ', name);
+    fetchUploadCrossword(formData);
 
-    document.getElementById("buttonFile").innerHTML += '<p><a href ="/crosswords/solveFile/' + formData + '"> ' + name + '</a></p>';
 
   };
  

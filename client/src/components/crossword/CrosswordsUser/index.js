@@ -80,9 +80,6 @@ const CrosswordsUser = () => {
     setFormData(formData);
   };
 
-  /*useEffect(() => {
-      setError('');
-    }, [formData]);*/
 
   const handleFileSubmit = (e) => {
     fetchUploadCrossword();

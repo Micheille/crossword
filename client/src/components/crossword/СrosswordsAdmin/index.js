@@ -60,11 +60,13 @@ const CrosswordsAdmin = () => {
         console.log('responce: ', response);
         if (response.ok) {
           setIsUploadedFile(true);
-        }else flag=true;
+        }
+        else{
+          setError('Файл нельзя загрузить.');
+        }
         return response.json();
       })
       .then((data) => {
-        if(flag) alert (data.message);
         setCrossword(data.crossword.words);
         setWidth(data.crossword.m);
         setHeight(data.crossword.n);
@@ -72,20 +74,21 @@ const CrosswordsAdmin = () => {
         setDictName('Общий_словарь');
       })
       .catch((error) => {
+        setError('Файл поврежден или неверного формата.');
         console.log('error: ', error);
       });
   };
 
   const handleFilePickerChange = (files) => {
+    setIsKostil(false);
+    setIsKostila(false);
+    setError('');
     setIsUploadedFile(false);
     const formData = new FormData();
     formData.append('file', files[0]);
     setFormData(formData);
   };
 
-  useEffect(() => {
-    setError('');
-  }, [formData]);
 
   const handleFileSubmit = (e) => {
     fetchUploadCrossword();
@@ -102,7 +105,7 @@ const CrosswordsAdmin = () => {
 
   return (
     <div>
-      {isKostil ? (
+      {isKostil && (error === '') ? (
         <ChangeCrossword
           width={width}
           height={height}
@@ -134,6 +137,7 @@ const CrosswordsAdmin = () => {
               {isUploadedFile && (
                 <InlineAlert intent='success'>Кроссворд загружен</InlineAlert>
               )}
+              {error && ( <InlineAlert intent='danger'>{error}</InlineAlert> )}
             </Pane>
           </Dialog>
           <p></p>

@@ -103,10 +103,10 @@ const MakeCrossword = ({ width, height, dictName }) => {
       const fullWord = dictionary.filter(({ word, definition }) => {
         return word === event.target.value;
       })[0];
-      const i = +cellsChosen[0].attributes.x.value;
-      const j = +cellsChosen[0].attributes.y.value;
-      const nextI = +cellsChosen[1].attributes.x.value;
-      const direction = nextI > i ? horizontalValue : verticalValue;
+      const i = +cellsChosen[0].attributes.y.value;
+      const j = +cellsChosen[0].attributes.x.value;
+      const nextI = +cellsChosen[1].attributes.Y.value;
+      const direction = nextI > i ? verticalValue : horizontalValue;
 
       setWordInfoWritten([
         ...wordInfoWritten,
@@ -190,7 +190,9 @@ const MakeCrossword = ({ width, height, dictName }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(makeJSON()),
+        body: JSON.stringify(
+          makeJSON(crosswordName, width, height, wordInfoWritten)
+        ),
       })
         .then((response) => {
           if (response.ok) setIsSaved(true);

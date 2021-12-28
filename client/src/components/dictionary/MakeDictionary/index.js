@@ -157,7 +157,9 @@ const MakeDictionary = () => {
       <p>
         <label>
           Добавить слово с определением:
-          <button onClick={() => setIsDialogShown(true)}>+</button>
+          <button type='button' onClick={() => setIsDialogShown(true)}>
+            +
+          </button>
         </label>
       </p>
 

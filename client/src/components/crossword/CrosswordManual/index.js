@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 
 import { CrosswordParams } from '../CrosswordParams';
 import { MakeCrossword } from '../MakeCrossword';
-import { GenerateCrossword } from "../GenerateCrossword";
-
+import { GenerateCrossword } from '../GenerateCrossword';
 
 const CrosswordManual = () => {
   const [width, setWidth] = useState(15);
@@ -15,7 +14,9 @@ const CrosswordManual = () => {
     case 0:
       return (
         <CrosswordParams
+          width={width}
           setWidth={setWidth}
+          height={height}
           setHeight={setHeight}
           dictName={dictName}
           setDictName={setDictName}
@@ -24,11 +25,11 @@ const CrosswordManual = () => {
       );
     case 1:
       return (
-          <MakeCrossword width={width} height={height} dictName={dictName} />
+        <MakeCrossword width={width} height={height} dictName={dictName} />
       );
     case 2:
       return (
-          <GenerateCrossword width={width} height={height} dictName={dictName} />
+        <GenerateCrossword width={width} height={height} dictName={dictName} />
       );
     default:
       return (

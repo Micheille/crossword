@@ -29,6 +29,7 @@ const CrosswordsAdmin = () => {
       .then((data) => {
         console.log('data: ', data);
         setCrossNames(data.names);
+        document.getElementById('demo').innerHTML = '';
         for (let i = 0; i < data.names.length; i++) {
           document.getElementById('demo').innerHTML +=
             '<p><a href ="/crosswords/change/' +
@@ -45,9 +46,25 @@ const CrosswordsAdmin = () => {
     e.preventDefault();
   };
 
-  useEffect(() => {
-    setError('');
-  }, [formData]);
+    const fetchUploadListOfCrosswords = () => {
+        fetch('http://localhost:8080/list_of_crosswords', {
+              method: 'GET',
+            })
+              .then((response) => {
+                if (response.ok) {
+                  setIsUploaded(true);
+                }
+                return response.json();
+              })
+              .then((data) => {
+                console.log('data: ', data);
+                setCrossNames(data.names);
+                })
+              .catch((error) => {
+                console.log('error: ', error.message);
+              });
+
+    }
 
   const fetchUploadCrossword = () => {
       fetch(`http://localhost:8080/upload_crossword`, {
@@ -61,13 +78,14 @@ const CrosswordsAdmin = () => {
           }
           return response.json();
         })
-        .then((json) => setError(json.message))
         .catch((error) => {
+            setError('Файл поврежден или неверного формата.');
           console.log('error: ', error);
         });
     };
 
   const handleFilePickerChange = (files) => {
+      setError('');
       setIsUploaded(false);
       const formData = new FormData();
       formData.append('file', files[0]);
@@ -80,6 +98,7 @@ const CrosswordsAdmin = () => {
     };
 
     const handleFileSubmit = (e) => {
+        fetchUploadListOfCrosswords();
         const fileName = formData.get('file').name;
         const name = fileName.substring(0, fileName.length - 5);
 

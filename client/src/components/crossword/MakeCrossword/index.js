@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import { InlineAlert } from 'evergreen-ui';
+
 import { CrosswordTable } from '../CrosswordTable';
 
 import { isWordSuitable } from '../../../utils/isWordSuitable';
@@ -7,19 +9,44 @@ import { arrayContains } from '../../../utils/arrayContains';
 
 import './style.css';
 
-const initialWordsWrittenState = [];
+const initialWordsCellsWrittenState = [];
 const initialWordAttrsState = '';
 const initialCellsChosenState = [];
 const initialWordChosenState = [];
 
+const horizontalValue = 1;
+const verticalValue = -1;
+
 const MakeCrossword = ({ width, height, dictName }) => {
   const [dictionary, setDictionary] = useState([]);
   const [wordsForSelect, setWordsForSelect] = useState([]);
-  const [wordsWritten, setWordsWritten] = useState(initialWordsWrittenState);
+  const [wordsCellsWritten, setWordsCellsWritten] = useState(
+    initialWordsCellsWrittenState
+  );
+  const [wordInfoWritten, setWordInfoWritten] = useState([]);
   const [wordAttrs, setWordAttrs] = useState(initialWordAttrsState);
   const [cellsChosen, setCellsChosen] = useState(initialCellsChosenState);
   const [wordChosen, setWordChosen] = useState(initialWordChosenState);
   const [wordInDictionary, setWordInDictionary] = useState('');
+
+  const [crosswordNames, setCrosswordNames] = useState([]);
+  const [crosswordName, setCrosswordName] = useState('');
+
+  const [error, setError] = useState('');
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/list_of_crosswords')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setCrosswordNames(data.names);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   useEffect(() => {
     fetch(`http://localhost:8080/browse_dictionary?name=${dictName}`)
@@ -38,9 +65,9 @@ const MakeCrossword = ({ width, height, dictName }) => {
 
   useEffect(() => {
     if (cellsChosen.length) {
-      for (let i = 0; i < wordsWritten.length; i++) {
-        if (arrayContains(wordsWritten[i], cellsChosen)) {
-          setWordChosen(wordsWritten[i]);
+      for (let i = 0; i < wordsCellsWritten.length; i++) {
+        if (arrayContains(wordsCellsWritten[i], cellsChosen)) {
+          setWordChosen(wordsCellsWritten[i]);
           return;
         }
       }
@@ -68,25 +95,48 @@ const MakeCrossword = ({ width, height, dictName }) => {
   }, [wordChosen, dictionary]);
 
   const onSelectChange = (event) => {
-    cellsChosen.forEach(
-      (cell, index) => (cell.textContent = event.target.value[index])
-    );
+    if (cellsChosen.length > 2) {
+      cellsChosen.forEach(
+        (cell, index) => (cell.textContent = event.target.value[index])
+      );
 
-    setWordsWritten([...wordsWritten, cellsChosen]);
-    setWordsForSelect(
-      wordsForSelect.filter(
-        ({ word, definition }) => word !== event.target.value
-      )
-    );
+      const fullWord = dictionary.filter(({ word, definition }) => {
+        return word === event.target.value;
+      })[0];
+      const i = +cellsChosen[0].attributes.x.value;
+      const j = +cellsChosen[0].attributes.y.value;
+      const nextI = +cellsChosen[1].attributes.x.value;
+      const direction = nextI > i ? horizontalValue : verticalValue;
+
+      setWordInfoWritten([
+        ...wordInfoWritten,
+        {
+          word: fullWord.word,
+          i: i,
+          j: j,
+          direction: direction,
+          definition: fullWord.definition,
+        },
+      ]);
+
+      setWordsCellsWritten([...wordsCellsWritten, cellsChosen]);
+      setWordsForSelect(
+        wordsForSelect.filter(
+          ({ word, definition }) => word !== event.target.value
+        )
+      );
+
+      setIsSaved(false);
+    }
   };
 
   const onWordDelete = () => {
     for (let k = 0; k < wordChosen.length; k++) {
       let count = 0;
 
-      for (let i = 0; i < wordsWritten.length; i++) {
-        for (let j = 0; j < wordsWritten[i].length; j++) {
-          if (wordChosen[k] === wordsWritten[i][j]) {
+      for (let i = 0; i < wordsCellsWritten.length; i++) {
+        for (let j = 0; j < wordsCellsWritten[i].length; j++) {
+          if (wordChosen[k] === wordsCellsWritten[i][j]) {
             count++;
           }
         }
@@ -97,18 +147,65 @@ const MakeCrossword = ({ width, height, dictName }) => {
       }
     }
 
-    setWordChosen([]);
-    setWordsWritten(
-      wordsWritten.filter((wordCells) => !arrayContains(wordCells, wordChosen))
+    setWordInfoWritten(
+      wordInfoWritten.filter((wordInfo) => {
+        console.log(wordInfo.word);
+        console.log(wordInDictionary.word);
+        return wordInfo.word !== wordInDictionary.word;
+      })
+    );
+    setWordsCellsWritten(
+      wordsCellsWritten.filter(
+        (wordCells) => !arrayContains(wordCells, wordChosen)
+      )
     );
     setWordsForSelect([
       ...wordsForSelect,
       { word: wordInDictionary.word, definition: wordInDictionary.definition },
     ]);
+    setWordChosen([]);
+
+    setIsSaved(false);
+  };
+
+  const makeJSON = (crosswordName, width, height, wordInfoWritten) => {
+    return {
+      name: crosswordName,
+      words: wordInfoWritten,
+      n: width,
+      m: height,
+    };
+  };
+
+  const onSubmitSave = (e) => {
+    console.log(makeJSON(crosswordName, width, height, wordInfoWritten));
+
+    if (crosswordNames.includes(crosswordName)) {
+      setError('Кроссворд с таким именем уже существует');
+    } else {
+      setError('');
+
+      fetch(`http://localhost:8080/save_crossword?name=${crosswordName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(makeJSON()),
+      })
+        .then((response) => {
+          if (response.ok) setIsSaved(true);
+          return response.json();
+        })
+        .catch((error) => {
+          console.log('error: ', error.message);
+        });
+    }
+
+    e.preventDefault();
   };
 
   return (
-    <section className='crossword-manual'>
+    <form className='crossword-manual' onSubmit={onSubmitSave}>
       <section className='crossword-manual__table'>
         <CrosswordTable
           width={width}
@@ -159,14 +256,26 @@ const MakeCrossword = ({ width, height, dictName }) => {
           </div>
         )}
 
-        <input type='text' placeholder='Название кроссворда' />
+        <input
+          type='text'
+          placeholder='Название кроссворда'
+          pattern='[а-яА-ЯёЁ0-9_ -]+'
+          required
+          value={crosswordName}
+          onChange={(e) => setCrosswordName(e.target.value)}
+          title='Допускаются кириллица, цифры, пробел и знаки _, -'
+        />
 
         <div>
+          <button type='submit'>Сохранить</button>
           <button>Скачать</button>
-          <button>Сохранить</button>
+          {isSaved && (
+            <InlineAlert intent='success'>Кроссворд сохранён</InlineAlert>
+          )}
+          {error && <InlineAlert intent='danger'>{error}</InlineAlert>}
         </div>
       </section>
-    </section>
+    </form>
   );
 };
 

@@ -12,16 +12,14 @@ const initialWordAttrsState = '';
 const initialCellsChosenState = [];
 const initialWordChosenState = [];
 
-const ChangeCrossword = ({ width, height, dictName }) => {
+const ChangeCrossword = ({ width, height, dictName, wordsCross, crossName }) => {
   const [dictionary, setDictionary] = useState([]);
+  const [wordsForSelect, setWordsForSelect] = useState([]);
   const [wordsWritten, setWordsWritten] = useState(initialWordsWrittenState);
   const [wordAttrs, setWordAttrs] = useState(initialWordAttrsState);
   const [cellsChosen, setCellsChosen] = useState(initialCellsChosenState);
   const [wordChosen, setWordChosen] = useState(initialWordChosenState);
-
-  // useEffect(() => {
-  //   console.log('words written', wordsWritten);
-  // }, [wordsWritten]);
+  const [wordInDictionary, setWordInDictionary] = useState('');
 
   useEffect(() => {
     fetch(`http://localhost:8080/browse_dictionary?name=${dictName}`)
@@ -29,7 +27,9 @@ const ChangeCrossword = ({ width, height, dictName }) => {
         return response.json();
       })
       .then((data) => {
-        setDictionary(data.dictionary.words);
+        const words = data.dictionary.words;
+        setDictionary(words);
+        setWordsForSelect(words);
       })
       .catch((error) => {
         console.log(error);
@@ -41,7 +41,7 @@ const ChangeCrossword = ({ width, height, dictName }) => {
       for (let i = 0; i < wordsWritten.length; i++) {
         if (arrayContains(wordsWritten[i], cellsChosen)) {
           setWordChosen(wordsWritten[i]);
-          break;
+          return;
         }
       }
 
@@ -50,13 +50,22 @@ const ChangeCrossword = ({ width, height, dictName }) => {
         ''
       );
 
+      setWordChosen([]);
       setWordAttrs(wordAttrs);
     }
   }, [cellsChosen]);
 
-  // useEffect(() => {
-  //   console.log('wordChosen: ', wordChosen);
-  // }, [wordChosen]);
+  useEffect(() => {
+    let wordFromCells = '';
+
+    for (let i = 0; i < wordChosen.length; i++) {
+      wordFromCells += wordChosen[i].textContent;
+    }
+
+    setWordInDictionary(
+      dictionary.filter(({ word, definition }) => word === wordFromCells)[0]
+    );
+  }, [wordChosen, dictionary]);
 
   const onSelectChange = (event) => {
     cellsChosen.forEach(
@@ -64,6 +73,38 @@ const ChangeCrossword = ({ width, height, dictName }) => {
     );
 
     setWordsWritten([...wordsWritten, cellsChosen]);
+    setWordsForSelect(
+      wordsForSelect.filter(
+        ({ word, definition }) => word !== event.target.value
+      )
+    );
+  };
+
+  const onWordDelete = () => {
+    for (let k = 0; k < wordChosen.length; k++) {
+      let count = 0;
+
+      for (let i = 0; i < wordsWritten.length; i++) {
+        for (let j = 0; j < wordsWritten[i].length; j++) {
+          if (wordChosen[k] === wordsWritten[i][j]) {
+            count++;
+          }
+        }
+      }
+
+      if (count < 2) {
+        wordChosen[k].textContent = '';
+      }
+    }
+
+    setWordChosen([]);
+    setWordsWritten(
+      wordsWritten.filter((wordCells) => !arrayContains(wordCells, wordChosen))
+    );
+    setWordsForSelect([
+      ...wordsForSelect,
+      { word: wordInDictionary.word, definition: wordInDictionary.definition },
+    ]);
   };
 
   return (
@@ -81,29 +122,42 @@ const ChangeCrossword = ({ width, height, dictName }) => {
       <section className='crossword-manual__info'>
         <p>Словарь: {dictName}</p>
 
-        <p>Сортировка</p>
+        {wordInDictionary ? (
+          <div>
+            <div>{wordInDictionary.word}</div>
+            <div>{wordInDictionary.definition}</div>
 
-        <div>
-          <label>
-            <input type='radio' name='sort' value='alphabet' />
-            По алфавиту
-          </label>
+            <button type='button' onClick={onWordDelete}>
+              Удалить
+            </button>
+          </div>
+        ) : (
+          <div>
+            <p>Сортировка</p>
 
-          <label>
-            <input type='radio' name='sort' value='length' />
-            По длине слов
-          </label>
-        </div>
+            <div>
+              <label>
+                <input type='radio' name='sort' value='alphabet' />
+                По алфавиту
+              </label>
 
-        <select size={20} onChange={onSelectChange}>
-          {dictionary
-            .filter(({ word }) => isWordSuitable(word, wordAttrs))
-            .map(({ word }) => (
-              <option key={word} value={word}>
-                {word}
-              </option>
-            ))}
-        </select>
+              <label>
+                <input type='radio' name='sort' value='length' />
+                По длине слов
+              </label>
+            </div>
+
+            <select size={20} onChange={onSelectChange}>
+              {wordsForSelect
+                .filter(({ word }) => isWordSuitable(word, wordAttrs))
+                .map(({ word }) => (
+                  <option key={word} value={word}>
+                    {word}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
 
         <input type='text' placeholder='Название кроссворда' />
 

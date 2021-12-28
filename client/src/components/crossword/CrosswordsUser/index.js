@@ -30,13 +30,11 @@ const CrosswordsUser = () => {
         }).then((data) =>{
           console.log(data);
           for (let i = 0; i < data.names.length; i++){
-
-          document.getElementById("demo").innerHTML += '<p><a href ="/crosswords/solve/' + data.names[i] + '"> ' + data.names[i] + '</a></p>';;
+            document.getElementById("demo").innerHTML += '<p><a href ="/crosswords/solve/' + data.names[i] + '"> ' + data.names[i] + '</a></p>';;
           }
         })
       .catch((error) => {
         console.log('error: ', error.message);
-
       });
       e.preventDefault();
   };

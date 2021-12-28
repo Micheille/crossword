@@ -53,6 +53,9 @@ const CrosswordsUser = () => {
           if (response.ok) {
             setIsUploadedFile(true);
           }
+          else{
+            setError('Файл нельзя загрузить.');
+          }
           return response.json();
         })
         .then((data) => {
@@ -62,20 +65,24 @@ const CrosswordsUser = () => {
             setCrossName(data.crossword.name);
         })
         .catch((error) => {
+          setError('Файл поврежден или неверного формата.');
           console.log('error: ', error);
         });
   };
 
   const handleFilePickerChange = (files) => {
+    setIsKostil(false);
+    setIsKostila(false);
+    setError('');
     setIsUploadedFile(false);
     const formData = new FormData();
     formData.append('file', files[0]);
     setFormData(formData);
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
       setError('');
-    }, [formData]);
+    }, [formData]);*/
 
   const handleFileSubmit = (e) => {
     fetchUploadCrossword();
@@ -88,7 +95,7 @@ const CrosswordsUser = () => {
 
   return (
   <div>
-        {isKostil ?
+        {isKostil && (error === '') ?
             (<SolveCrosswordFromFile
             width={width}
             height={height}
@@ -101,7 +108,14 @@ const CrosswordsUser = () => {
             <Dialog
                 isShown={isDialogShown}
                 title='Загрузка из файла'
-                onCloseComplete={() => setIsDialogShown(false)}
+                onCloseComplete={() => {
+                setIsDialogShown(false);
+                setIsKostil(false);
+                setIsKostila(false);
+                setError('');
+                setIsUploadedFile(false);
+                }
+                }
                 onConfirm={handleFileSubmit}
             >
               <Pane width={350}>
@@ -116,6 +130,7 @@ const CrosswordsUser = () => {
                   {isUploadedFile && (
                     <InlineAlert intent='success'>Кроссворд загружен</InlineAlert>
                   )}
+                  {error && ( <InlineAlert intent='danger'>{error}</InlineAlert> )}
               </Pane>
             </Dialog>
             <p></p>

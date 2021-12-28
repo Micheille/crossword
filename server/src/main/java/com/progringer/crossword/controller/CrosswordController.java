@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.EOFException;
 import java.io.IOException;
 
 @RestController
@@ -86,8 +87,13 @@ public class CrosswordController {
     @GetMapping("/browse_crossword")
     @Cacheable(value = "crossword", key = "#name")
     public CrosswordBrowsedResponse browseCrossword(@Parameter(description = "Имя требуемого кроссворда. Не может быть пустым.") @RequestParam @NotEmpty String name) throws IOException, ClassNotFoundException {
-        Crossword crossword = fileService.browseCrosswordFromFile(name);
-        return new CrosswordBrowsedResponse(convertToCrosswordDto(crossword));
+        try {
+            Crossword crossword = fileService.browseCrosswordFromFile(name);
+            return new CrosswordBrowsedResponse(convertToCrosswordDto(crossword));
+        }
+        catch (EOFException e){
+            throw new DictionaryFileException();
+        }
     }
 
     @Operation(summary = "Получить словарь по имени с сервера. Кэшируемая ручка, инвалидируется при сохранении или загрузке словаря с таким же именем")

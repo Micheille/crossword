@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './style.css';
 
+
 const InfoDevelopersUser = () => {
   return (
     <section>
@@ -18,6 +19,7 @@ const InfoDevelopersUser = () => {
       <p className="center">Тарасова Виктория Николаевна</p>
       <p className="center">Самара 2021</p>
 	  <Link to='systemU'>Сведения о системе</Link>
+
     </section>
   );
 };

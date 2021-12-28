@@ -107,6 +107,36 @@ const MakeCrossword = ({ width, height, dictName }) => {
     ]);
   };
 
+  const sortAlphabetical = () => {
+    const elem = document.querySelector("select");
+    var tmpAry = [];
+    // Grab all existing entries
+    for (let i=0;i<elem.options.length;i++) tmpAry.push(elem.options[i]);
+    // Sort array by text attribute
+    tmpAry.sort(function(a,b){ return (a.text < b.text)?-1:1; });
+    // Wipe out existing elements
+    while (elem.options.length > 0) elem.options[0] = null;
+    // Restore sorted elements
+    for (let i=0;i<tmpAry.length;i++) {
+      elem.options[i] = tmpAry[i];
+    }
+  }
+
+  const sortByLength = () => {
+    const elem = document.querySelector("select");
+    var tmpAry = [];
+    // Grab all existing entries
+    for (let i=0;i<elem.options.length;i++) tmpAry.push(elem.options[i]);
+    // Sort array by text attribute
+    tmpAry.sort(function(a,b){ return (a.text.length < b.text.length)?-1:1; });
+    // Wipe out existing elements
+    while (elem.options.length > 0) elem.options[0] = null;
+    // Restore sorted elements
+    for (let i=0;i<tmpAry.length;i++) {
+      elem.options[i] = tmpAry[i];
+    }
+  }
+
   return (
     <section className='crossword-manual'>
       <section className='crossword-manual__table'>
@@ -137,12 +167,12 @@ const MakeCrossword = ({ width, height, dictName }) => {
 
             <div>
               <label>
-                <input type='radio' name='sort' value='alphabet' />
+                <input type='radio' name='sort' value='alphabet' onClick={sortAlphabetical}/>
                 По алфавиту
               </label>
 
               <label>
-                <input type='radio' name='sort' value='length' />
+                <input type='radio' name='sort' value='length' onClick={sortByLength} />
                 По длине слов
               </label>
             </div>

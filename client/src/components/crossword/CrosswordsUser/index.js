@@ -9,12 +9,13 @@ import { Dialog, FilePicker, Button, InlineAlert, Pane } from 'evergreen-ui';
 const CrosswordsUser = () => {
   var res;
   const [formData, setFormData] = useState('');
-  const [crossword, setCrossword] = useState([]);
+  const [crossword, setCrossword] = useState({});
   const [isUploaded, setIsUploaded] = useState(false);
   const [isUploadedFile, setIsUploadedFile] = useState(false);
   const [isDialogShown, setIsDialogShown] = useState(false);
   const [error, setError] = useState('');
   const [isKostil, setIsKostil] = useState(false);
+  const [isKostila, setIsKostila] = useState(false);
 
   const handleSubmit = (e) => {
 
@@ -65,8 +66,6 @@ const CrosswordsUser = () => {
     const formData = new FormData();
     formData.append('file', files[0]);
     setFormData(formData);
-    console.log('formData: ', formData);
-
   };
 
   useEffect(() => {
@@ -75,8 +74,11 @@ const CrosswordsUser = () => {
 
   const handleFileSubmit = (e) => {
     fetchUploadCrossword();
-    if (crossword != []) setIsKostil(true);
     console.log('crossword: ', crossword);
+    if (isKostila) {setIsKostil(true)};
+    if (!isKostil) {setIsKostila(true)};
+    console.log('isKostil: ', isKostil);
+    console.log('isKostila: ', isKostila);
   };
 
   return (
@@ -113,7 +115,7 @@ const CrosswordsUser = () => {
            </form>
            <p id="demo"></p>
         </section>
-        )}
+        )  }
   </div>
   )
 

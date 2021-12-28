@@ -12,10 +12,11 @@ const SolveCrossword = () => {
     const [height, setHeight] = useState(10);
     const [result, setResult] = useState("");
     const [isUploaded, setIsUploaded] = useState(false);
+    
     const correct = {};
     const {crossName} = useParams();
     let corAns = 0;
-    
+    let flag=false;
 
     useEffect(() => {
         fetch(`http://localhost:8080/browse_crossword?name=${crossName}`)
@@ -23,15 +24,14 @@ const SolveCrossword = () => {
                 if (response.ok) {
                     setIsUploaded(true);
                   }
-                
+                 else flag=true; 
                 return response.json();
             })
             .then((data) => {
-
+                if(flag) alert(data.message);
                 setCrossword(data.crossword.words);
                 setWidth(data.crossword.m);
                 setHeight(data.crossword.n);
-                console.log(data);
             })
             .then(()=>{
                 const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;

@@ -20,6 +20,7 @@ const CrosswordsAdmin = () => {
   const [height, setHeight] = useState(10);
   const [crossName, setCrossName] = useState('');
   const [dictName, setDictName] = useState('');
+  let flag=false;
 
   var obj;
   const handleSubmit = (e) => {

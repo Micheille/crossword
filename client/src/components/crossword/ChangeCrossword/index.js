@@ -14,6 +14,7 @@ const initialWordsCellsWrittenState = [];
 const initialWordAttrsState = '';
 const initialCellsChosenState = [];
 const initialWordChosenState = [];
+let flag=false;
 
 const horizontalValue = 1;
 const verticalValue = -1;
@@ -60,9 +61,11 @@ const ChangeCrossword = () => {
   useEffect(() => {
     fetch(`http://localhost:8080/browse_dictionary?name=${dictName}`)
       .then((response) => {
+        if(!response.ok) flag=true;
         return response.json();
       })
       .then((data) => {
+        if(flag) alert (data.message);
         const words = data.dictionary.words;
         setDictionary(words);
         setWordsForSelect(words);
@@ -284,6 +287,22 @@ const ChangeCrossword = () => {
     }
   };
 
+
+  const download = (e) => {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(makeJSON(crossName, width, height, wordInfoWritten))));
+    pom.setAttribute('download', crossName+'.kros');
+
+    if (document.createEvent) {
+      var event = document.createEvent('MouseEvents');
+      event.initEvent('click', true, true);
+      pom.dispatchEvent(event);
+    }
+    else {
+      pom.click();
+    }
+  }
+
   return (
     <form className='crossword-manual' onSubmit={onSubmitSave}>
       <section className='crossword-manual__table'>
@@ -348,7 +367,7 @@ const ChangeCrossword = () => {
 
         <div>
           <button type='submit'>Сохранить</button>
-          <button>Скачать</button>
+          <button onClick={download}>Скачать</button>
           {isSaved && (
             <InlineAlert intent='success'>Кроссворд сохранён</InlineAlert>
           )}

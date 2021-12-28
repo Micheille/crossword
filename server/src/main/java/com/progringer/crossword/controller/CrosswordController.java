@@ -140,6 +140,13 @@ public class CrosswordController {
         return new CrosswordBrowsedResponse(convertToCrosswordDto(crossword));
     }
 
+    @Operation(summary = "Загрузить файл с кроссвордом на сервер")
+    @PostMapping("/upload_crossword")
+    public CrosswordSavedResponse uploadCrossword(@Parameter(description = "Файл кроссворда, запись внутри в формате JSON") @RequestParam MultipartFile file) throws IOException {
+        String savedName = fileService.saveCrosswordFromFile(file);
+        return new CrosswordSavedResponse(savedName);
+    }
+
     @Operation(summary = "Получить файл справки админа")
     @GetMapping("/get_info_admin")
     public ResponseEntity<Resource> getInfoA() throws IOException {

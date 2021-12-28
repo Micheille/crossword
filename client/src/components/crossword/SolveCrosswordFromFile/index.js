@@ -17,7 +17,7 @@ const SolveCrosswordFromFile = ({ width, height, words, crossName }) => {
 
     useEffect(() => {
 
-        fetch(`http://localhost:8080/browse_crossword?name=${crossName}`)
+        fetch(`http://localhost:8080/browse_crossword?name=${"Общий_15_17"}`)
             .then((response) => {
                 if (response.ok) {
                     setIsUploaded(true);

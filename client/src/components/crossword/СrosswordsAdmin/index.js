@@ -36,7 +36,7 @@ const CrosswordsAdmin = () => {
         console.log('data: ', data);
         for (let i = 0; i < data.names.length; i++) {
           document.getElementById('demo').innerHTML +=
-            '<p><a href ="/crosswords/solve/' +
+            '<p><a href ="/crosswords/change/' +
             data.names[i] +
             '"> ' +
             data.names[i] +

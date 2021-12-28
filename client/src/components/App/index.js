@@ -10,13 +10,16 @@ import { AdminPanel } from '../AdminPanel';
 import { CrosswordManual } from '../crossword/CrosswordManual';
 import { AuthForm } from '../AuthForm';
 import { InfoDevelopersAdmin } from '../Info/InfoDevelopersAdmin';
-import { InfoDevelopersUser} from '../Info/InfoDevelopersUser';
+import { InfoDevelopersUser } from '../Info/InfoDevelopersUser';
 import { InfoSystemAdmin } from '../Info/InfoSystemAdmin';
 import { InfoSystemUser } from '../Info/InfoSystemUser';
 
+import { SolveCrossword } from '../crossword/SolveCrossword';
+import { SolveCrosswordFromFile } from '../crossword/SolveCrosswordFromFile';
+
+import { ChangeCrossword } from '../crossword/ChangeCrossword';
+
 import './App.css';
-import {SolveCrossword} from "../crossword/SolveCrossword";
-import {SolveCrosswordFromFile} from "../crossword/SolveCrosswordFromFile";
 
 function App() {
   const [isAuthorized, setIsAuthorized] = useState(
@@ -48,8 +51,18 @@ function App() {
                 </>
               )}
               <Route path='/crosswords/new' element={<CrosswordManual />} />
-              <Route path='/crosswords/solve/:crossName' element={<SolveCrossword />} />
-              <Route path='/crosswords/solveFile/:formData' element={<SolveCrosswordFromFile />} />
+              <Route
+                path='/crosswords/solve/:crossName'
+                element={<SolveCrossword />}
+              />
+              <Route
+                path='/crosswords/solveFile/:formData'
+                element={<SolveCrosswordFromFile />}
+              />
+              <Route
+                path='/crosswords/change/:crossName'
+                element={<ChangeCrossword />}
+              />
               <Route path='/dictionaries/*' element={<DictionariesAdmin />} />
               <Route path='/info/systemA' element={<InfoSystemAdmin />} />
               <Route path='/info/systemU' element={<InfoSystemUser />} />

@@ -31,4 +31,9 @@ public class Crossword implements Serializable {
     public void addWord(WordInCrossword word){
         words.add(word);
     }
+
+    /*public boolean hasSeparatedWords(){
+        HashSet<WordInCrossword> separatedWords = new HashSet<>(words);
+        for(int i = )
+    }*/
 }

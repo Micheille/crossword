@@ -143,7 +143,6 @@ public class CrosswordController {
     @Operation(summary = "Загрузить файл с кроссвордом на сервер")
     @PostMapping("/upload_crossword")
     @Caching(evict = {
-            @CacheEvict(value = "crossword", key = "#name"),
             @CacheEvict(value = "crossword_list", allEntries = true)
     })
     public CrosswordSavedResponse uploadCrossword(@Parameter(description = "Файл кроссворда, запись внутри в формате JSON") @RequestParam MultipartFile file) throws IOException {

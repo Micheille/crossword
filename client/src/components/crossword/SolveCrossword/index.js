@@ -27,7 +27,7 @@ const SolveCrossword = () => {
                 return response.json();
             })
             .then((data) => {
-                
+
                 setCrossword(data.crossword.words);
                 setWidth(data.crossword.m);
                 setHeight(data.crossword.n);

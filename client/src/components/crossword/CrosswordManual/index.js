@@ -4,6 +4,8 @@ import { CrosswordParams } from '../CrosswordParams';
 import { MakeCrossword } from '../MakeCrossword';
 import { GenerateCrossword } from '../GenerateCrossword';
 
+import './style.css';
+
 const CrosswordManual = () => {
   const [width, setWidth] = useState(15);
   const [height, setHeight] = useState(15);

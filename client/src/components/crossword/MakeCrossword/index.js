@@ -172,8 +172,8 @@ const MakeCrossword = ({ width, height, dictName }) => {
     return {
       name: crosswordName,
       words: wordInfoWritten,
-      n: width,
-      m: height,
+      n: height,
+      m: width,
     };
   };
 

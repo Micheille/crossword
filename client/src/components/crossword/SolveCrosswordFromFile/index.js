@@ -25,15 +25,6 @@ const SolveCrosswordFromFile = ({ width, height, words, crossName }) => {
 
                 return response.json();
             })
-            .then((data) => {
-                console.log(data);
-            })
-            .then(() => {
-                //setCrossword(cross.words);
-                //setWidth(cross.m);
-                //setHeight(cross.n);
-                //setCrossName(cross.name);
-            })
             .then(()=>{
                 const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;
                 table.forEach((tr)=>{
@@ -63,6 +54,7 @@ const SolveCrosswordFromFile = ({ width, height, words, crossName }) => {
                         }
                         else{
                             for (let k1 = notion.j; k1 < notion.word.length+notion.j; k1++) {
+                                table.item(notion.i).childNodes.item(k1).classList.remove("table__cell_empty");
                                 table.item(notion.i).childNodes.item(k1).classList.add("table__cell_not-empty");
                                 table.item(notion.i).childNodes.item(k1).ans = notion.word[k1-notion.j];
                                 if(table.item(notion.i).childNodes.item(k1).words == undefined) {
@@ -78,6 +70,12 @@ const SolveCrosswordFromFile = ({ width, height, words, crossName }) => {
                     }
                 );
             })
+            .then((e)=> {
+                document.querySelectorAll(".table__cell_empty").forEach((el)=>{
+                    el.style.backgroundColor = 'black';
+                });
+                }
+            )
             .catch((error) => {
                 console.log(error);
             });
@@ -91,7 +89,6 @@ const onCellClick = (e)=>{
             e.target.key += 1;
             if(e.target.style.backgroundColor!='red'&&e.target.style.backgroundColor!='green')
                 e.target.contentEditable = 'true';
-            console.log(e.target.defs);
             document.querySelectorAll(".table__cell_word-selected").forEach((el)=>{
                 el.classList.remove("table__cell_word-selected");
             });
@@ -101,8 +98,6 @@ const onCellClick = (e)=>{
                 }
             });
             if(e.target.words.length>1) {
-                console.log(e.target.defs);
-                console.log(e.target.key+" "+e.target.key%2 +" "+ e.target.defs[e.target.key % 2]);
                 document.getElementsByClassName('definitions').item(0).value = e.target.defs[e.target.key % 2];
             }
             else
@@ -118,9 +113,13 @@ const onCellClick = (e)=>{
     }
 
     const onCheckClick = (e)=>{
-        localStorage.removeItem(crossName);
+        const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;
         document.querySelectorAll(".table__cell_word-selected").forEach((el)=>{
             el.classList.remove("table__cell_word-selected");
+        });
+        document.querySelectorAll(".table__cell").forEach((el)=>{
+            if (!el.classList.contains("table__cell_empty"))
+                el.classList.add("table__cell_not-empty");
         });
         document.querySelectorAll(".table__cell_not-empty").forEach((el)=>{
             el.contentEditable = 'false';
@@ -145,32 +144,6 @@ const onCellClick = (e)=>{
         //e.target.style.visibility = 'hidden';
     }
 
-    const save = (e)=>{
-        var data = {};
-        document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes
-            .forEach((el, ndx)=>{
-                data[ndx] = [];
-                el.childNodes.forEach((el1, ndx1)=>{
-                    data[ndx][ndx1] = el1.textContent;
-                })
-            });
-        console.log(data);
-        localStorage.setItem(crossName, JSON.stringify(data));
-    }
-
-    const getData = (e)=>{
-        var data = JSON.parse(localStorage.getItem(crossName));
-        const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;
-        console.log(data);
-        for (let el in data){
-            data[el].forEach((el1, ndx1)=>{
-                table.item(parseInt(el)).childNodes.item(ndx1).textContent = el1;
-            })
-            console.log(data[el]);
-        };
-        e.target.style.visibility = 'hidden';
-    }
-
     return (
         <section className='crossword-solve'>
             <section className='crossword-solve__table'>
@@ -190,9 +163,7 @@ const onCellClick = (e)=>{
                 <textarea className="definitions" rows={20} cols={33} readOnly={true}/>
 
                 <div>
-                    <button onClick={save}>Сохранить</button>
                     <button onClick={onCheckClick}>Завершить</button>
-                    <button onClick={getData}>Продолжить разгадывание</button>
                 </div>
             </section>
         </section>

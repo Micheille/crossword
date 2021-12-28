@@ -76,10 +76,13 @@ const CrosswordsAdmin = () => {
           if (response.ok) {
             setIsUploadedFile(true);
           }
+          else{
+            setError('Файл поврежден или неверного формата!');
+          }
           return response.json();
         })
         .catch((error) => {
-            setError('Файл поврежден или неверного формата.');
+          setError('Файл поврежден или неверного формата.');
           console.log('error: ', error);
         });
     };

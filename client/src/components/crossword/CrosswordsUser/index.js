@@ -56,7 +56,7 @@ const CrosswordsUser = () => {
           setIsUploadedFile(true);
           setGoSolve(true);
         } else {
-          setError('Файл нельзя загрузить.');
+          setError('Файл оврежден или неверного формата.');
         }
         return response.json();
       })

@@ -8,19 +8,12 @@ import { ChangeCrossword } from '../ChangeCrossword';
 
 const CrosswordsAdmin = () => {
   const [formData, setFormData] = useState('');
+  const [crossNames, setCrossNames] = useState([]);
   const [isUploaded, setIsUploaded] = useState(false);
   const [isUploadedFile, setIsUploadedFile] = useState(false);
   const [isDialogShown, setIsDialogShown] = useState(false);
   const [error, setError] = useState('');
-  const [isKostil, setIsKostil] = useState(false);
-  const [isKostila, setIsKostila] = useState(false);
-
-  const [crossword, setCrossword] = useState([]);
-  const [width, setWidth] = useState(10);
-  const [height, setHeight] = useState(10);
-  const [crossName, setCrossName] = useState('');
-  const [dictName, setDictName] = useState('');
-  let flag=false;
+  const [canRewrite, setCanRewrite] = useState(false);
 
   var obj;
   const handleSubmit = (e) => {
@@ -35,6 +28,7 @@ const CrosswordsAdmin = () => {
       })
       .then((data) => {
         console.log('data: ', data);
+        setCrossNames(data.names);
         for (let i = 0; i < data.names.length; i++) {
           document.getElementById('demo').innerHTML +=
             '<p><a href ="/crosswords/change/' +
@@ -51,69 +45,50 @@ const CrosswordsAdmin = () => {
     e.preventDefault();
   };
 
+  useEffect(() => {
+    setError('');
+  }, [formData]);
+
   const fetchUploadCrossword = () => {
-    fetch('http://localhost:8080/parse_crossword_file', {
-      method: 'POST',
-      body: formData,
-    })
-      .then((response) => {
-        console.log('responce: ', response);
-        if (response.ok) {
-          setIsUploadedFile(true);
-        }
-        else{
-          setError('Файл нельзя загрузить.');
-        }
-        return response.json();
+      fetch(`http://localhost:8080/upload_crossword`, {
+        method: 'POST',
+        body: formData,
       })
-      .then((data) => {
-        setCrossword(data.crossword.words);
-        setWidth(data.crossword.m);
-        setHeight(data.crossword.n);
-        setCrossName(data.crossword.name);
-        setDictName('Общий_словарь');
-      })
-      .catch((error) => {
-        setError('Файл поврежден или неверного формата.');
-        console.log('error: ', error);
-      });
-  };
+        .then((response) => {
+          console.log('responce: ', response);
+          if (response.ok) {
+            setIsUploadedFile(true);
+          }
+          return response.json();
+        })
+        .then((json) => setError(json.message))
+        .catch((error) => {
+          console.log('error: ', error);
+        });
+    };
 
   const handleFilePickerChange = (files) => {
-    setIsKostil(false);
-    setIsKostila(false);
-    setError('');
-    setIsUploadedFile(false);
-    const formData = new FormData();
-    formData.append('file', files[0]);
-    setFormData(formData);
-  };
+      setIsUploaded(false);
+      const formData = new FormData();
+      formData.append('file', files[0]);
+      setFormData(formData);
+    };
 
+    const handleRewriteSubmit = (e) => {
+      setCanRewrite(false);
+      fetchUploadCrossword();
+    };
 
-  const handleFileSubmit = (e) => {
-    fetchUploadCrossword();
-    console.log('crossword: ', crossword);
-    if (isKostila) {
-      setIsKostil(true);
-    }
-    if (!isKostil) {
-      setIsKostila(true);
-    }
-    console.log('isKostil: ', isKostil);
-    console.log('isKostila: ', isKostila);
-  };
+    const handleFileSubmit = (e) => {
+        const fileName = formData.get('file').name;
+        const name = fileName.substring(0, fileName.length - 5);
+
+        if (crossNames.includes(name)) {
+          setCanRewrite(true);
+        } else fetchUploadCrossword();
+      };
 
   return (
-    <div>
-      {isKostil && (error === '') ? (
-        <ChangeCrossword
-          width={width}
-          height={height}
-          dictName={dictName}
-          words={crossword}
-          crossName={crossName}
-        />
-      ) : (
         <section className='admin-crosswords'>
           <Link to='new'>Создать новый кроссворд</Link>
 
@@ -122,7 +97,13 @@ const CrosswordsAdmin = () => {
           <Dialog
             isShown={isDialogShown}
             title='Загрузка из файла'
-            onCloseComplete={() => setIsDialogShown(false)}
+            onCloseComplete={() => {
+                 setIsDialogShown(false);
+                 setError('');
+                 setIsUploadedFile(false);
+                 setCanRewrite(false);
+                 }
+             }
             onConfirm={handleFileSubmit}
           >
             <Pane width={350}>
@@ -134,6 +115,14 @@ const CrosswordsAdmin = () => {
                 onChange={handleFilePickerChange}
                 placeholder='Выберите файл .kros...'
               />
+              {canRewrite && (
+                <Pane display='flex'>
+                  <InlineAlert intent='warning'>
+                    Кроссворд будет перезаписан. Продолжить?
+                  </InlineAlert>
+                  <Button onClick={handleRewriteSubmit}>Да</Button>
+                </Pane>
+              )}
               {isUploadedFile && (
                 <InlineAlert intent='success'>Кроссворд загружен</InlineAlert>
               )}
@@ -146,8 +135,6 @@ const CrosswordsAdmin = () => {
           </form>
           <p id='demo'></p>
         </section>
-      )}
-    </div>
   );
 };
 

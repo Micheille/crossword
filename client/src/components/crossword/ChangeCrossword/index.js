@@ -11,6 +11,7 @@ const initialWordsWrittenState = [];
 const initialWordAttrsState = '';
 const initialCellsChosenState = [];
 const initialWordChosenState = [];
+let flag=false;
 
 const ChangeCrossword = ({ width, height, dictName, wordsCross, crossName }) => {
   const [dictionary, setDictionary] = useState([]);
@@ -24,9 +25,11 @@ const ChangeCrossword = ({ width, height, dictName, wordsCross, crossName }) => 
   useEffect(() => {
     fetch(`http://localhost:8080/browse_dictionary?name=${dictName}`)
       .then((response) => {
+        if(!response.ok) flag=true;
         return response.json();
       })
       .then((data) => {
+        if(flag) alert (data.message);
         const words = data.dictionary.words;
         setDictionary(words);
         setWordsForSelect(words);

@@ -15,6 +15,7 @@ const SolveCrossword = () => {
     const correct = {};
     const {crossName} = useParams();
     let corAns = 0;
+    
 
     useEffect(() => {
         fetch(`http://localhost:8080/browse_crossword?name=${crossName}`)
@@ -22,13 +23,15 @@ const SolveCrossword = () => {
                 if (response.ok) {
                     setIsUploaded(true);
                   }
-                  else alert(response.message);
+                
                 return response.json();
             })
             .then((data) => {
+                
                 setCrossword(data.crossword.words);
                 setWidth(data.crossword.m);
                 setHeight(data.crossword.n);
+                console.log(data);
             })
             .then(()=>{
                 const table = document.getElementsByClassName('table').item(0).childNodes.item(0).childNodes;

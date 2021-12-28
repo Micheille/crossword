@@ -17,6 +17,10 @@ const CrosswordsUser = () => {
   const [isKostil, setIsKostil] = useState(false);
   const [isKostila, setIsKostila] = useState(false);
 
+  const [width, setWidth] = useState(10);
+  const [height, setHeight] = useState(10);
+  const [crossName, setCrossName] = useState("");
+
   const handleSubmit = (e) => {
 
     fetch('http://localhost:8080/list_of_crosswords', {
@@ -52,7 +56,10 @@ const CrosswordsUser = () => {
           return response.json();
         })
         .then((data) => {
-            setCrossword(data.crossword);
+            setCrossword(data.crossword.words);
+            setWidth(data.crossword.m);
+            setHeight(data.crossword.n);
+            setCrossName(data.crossword.name);
         })
         .catch((error) => {
           console.log('error: ', error);
@@ -82,7 +89,11 @@ const CrosswordsUser = () => {
   return (
   <div>
         {isKostil ?
-            (<SolveCrosswordFromFile  data={crossword}  />
+            (<SolveCrosswordFromFile
+            width={width}
+            height={height}
+            words={crossword}
+            crossName={crossName}  />
         ) : (
         <section>
           <p>Выберите кроссворд для разгадывания:</p>

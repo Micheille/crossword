@@ -87,32 +87,7 @@ const ChangeDictionary = () => {
         }, 0);
       }
     }
-
-    // data = 'some file data\nand one else';
   };
-
-  // const download = (data, filename) => {
-  //   console.log('download');
-
-  //   var file = new Blob([data], { type: 'text/plain' });
-  //   // IE10+
-  //   if (window.navigator.msSaveOrOpenBlob)
-  //     window.navigator.msSaveOrOpenBlob(file, filename);
-  //   else {
-  //     // Others
-  //     var a = document.createElement('a'),
-  //       url = URL.createObjectURL(file);
-  //     url = URL.createObjectURL(file);
-  //     a.href = url;
-  //     a.download = filename;
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     setTimeout(function () {
-  //       document.body.removeChild(a);
-  //       window.URL.revokeObjectURL(url);
-  //     }, 0);
-  //   }
-  // };
 
   const handleDialogConfirm = () => {
     if (!(word && definition)) {
@@ -127,6 +102,8 @@ const ChangeDictionary = () => {
       setWordError(
         'Слово должно быть единственным и содержать только кириллицу'
       );
+    } else if (word.length < 3) {
+      setWordError('Слово должно состоять не менее чем из 3 букв');
     } else if (!/^([^a-zA-Z])+$/.test(definition)) {
       setWordError('Определение не должно содержать латиницу');
     } else {

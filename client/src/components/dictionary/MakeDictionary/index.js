@@ -63,6 +63,8 @@ const MakeDictionary = () => {
       setWordError(
         'Слово должно быть единственным и содержать только кириллицу'
       );
+    } else if (word.length < 3) {
+      setWordError('Слово должно состоять не менее чем из 3 букв');
     } else if (!/^([^a-zA-Z])+$/.test(definition)) {
       setWordError('Определение не должно содержать латиницу');
     } else {

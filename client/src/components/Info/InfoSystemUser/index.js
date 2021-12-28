@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import ImageNav from '../../../assets/nav.png';
+import ImageConf from '../../../assets/confirm.png';
+import ImageLogin from '../../../assets/login.png';
+import ImageMain from '../../../assets/main.png';
+import ImageOpen from '../../../assets/open.png';
+import ImageSolve from '../../../assets/solve.png';
+import ImageSolve2 from '../../../assets/solve2.png';
+import ImageSolve3 from '../../../assets/solve3.png';
+import ImageSolve4 from '../../../assets/solve4.png';
+import ImageSolve5 from '../../../assets/solve5.png';
+import ImageUpload from '../../../assets/upload.png';
+
 const InfoSystemUser = () => {
 
 const [isUploaded, setIsUploaded] = useState(false);

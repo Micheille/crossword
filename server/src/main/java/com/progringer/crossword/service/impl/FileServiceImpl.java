@@ -86,6 +86,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public String saveCrosswordFromFile(MultipartFile file) throws IOException {
+        Crossword browsedCrossword = parseFileToCrossword(file);
+        saveCrosswordToFile(browsedCrossword);
+        return browsedCrossword.getName();
+    }
+
+    @Override
     public Crossword parseFileToCrossword(MultipartFile file) throws IOException {
         Crossword crossword = new ObjectMapper().readValue(file.getInputStream(),Crossword.class);
         return crossword;

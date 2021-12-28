@@ -206,6 +206,24 @@ const MakeCrossword = ({ width, height, dictName }) => {
     e.preventDefault();
   };
 
+  const download = (e) => {
+    let crosName = crosswordName;
+    if(crosName.length==0)
+      crosName = 'Без имени';
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(makeJSON(crosName, width, height, wordInfoWritten))));
+    pom.setAttribute('download', crosName+'.kros');
+
+    if (document.createEvent) {
+      var event = document.createEvent('MouseEvents');
+      event.initEvent('click', true, true);
+      pom.dispatchEvent(event);
+    }
+    else {
+      pom.click();
+    }
+  }
+
   const sortAlphabetical = () => {
     const elem = document.querySelector("select");
     var tmpAry = [];
@@ -300,7 +318,7 @@ const MakeCrossword = ({ width, height, dictName }) => {
 
         <div>
           <button type='submit'>Сохранить</button>
-          <button>Скачать</button>
+          <button onClick={download}>Скачать</button>
           {isSaved && (
             <InlineAlert intent='success'>Кроссворд сохранён</InlineAlert>
           )}

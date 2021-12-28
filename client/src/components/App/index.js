@@ -20,10 +20,6 @@ import { SolveCrosswordFromFile } from '../crossword/SolveCrosswordFromFile';
 import { ChangeCrossword } from '../crossword/ChangeCrossword';
 
 import './App.css';
-<<<<<<< HEAD
-=======
-import {SolveCrossword} from "../crossword/SolveCrossword";
->>>>>>> c16a6d9a29f96a4591df0740d4d35abdc4250899
 
 function App() {
   const [isAuthorized, setIsAuthorized] = useState(

@@ -14,6 +14,7 @@ const initialWordsCellsWrittenState = [];
 const initialWordAttrsState = '';
 const initialCellsChosenState = [];
 const initialWordChosenState = [];
+let flag=false;
 
 const horizontalValue = 1;
 const verticalValue = -1;
@@ -60,9 +61,11 @@ const ChangeCrossword = () => {
   useEffect(() => {
     fetch(`http://localhost:8080/browse_dictionary?name=${dictName}`)
       .then((response) => {
+        if(!response.ok) flag=true;
         return response.json();
       })
       .then((data) => {
+        if(flag) alert (data.message);
         const words = data.dictionary.words;
         setDictionary(words);
         setWordsForSelect(words);

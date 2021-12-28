@@ -20,6 +20,7 @@ const CrosswordsAdmin = () => {
   const [height, setHeight] = useState(10);
   const [crossName, setCrossName] = useState('');
   const [dictName, setDictName] = useState('');
+  let flag=false;
 
   var obj;
   const handleSubmit = (e) => {
@@ -59,10 +60,11 @@ const CrosswordsAdmin = () => {
         console.log('responce: ', response);
         if (response.ok) {
           setIsUploadedFile(true);
-        }
+        }else flag=true;
         return response.json();
       })
       .then((data) => {
+        if(flag) alert (data.message);
         setCrossword(data.crossword.words);
         setWidth(data.crossword.m);
         setHeight(data.crossword.n);

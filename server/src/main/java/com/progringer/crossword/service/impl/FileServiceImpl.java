@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 @Service
@@ -43,7 +44,7 @@ public class FileServiceImpl implements FileService {
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(path, Charset.forName("windows-1251")))){
             out.println(dictionary.getName());
             for(Notion notion:dictionary.getWords()){
-                out.println(notion.getWord()+" "+notion.getDefinition());
+                out.println(notion.getWord().toUpperCase(Locale.ROOT)+" "+notion.getDefinition());
             }
         }
     }
@@ -70,7 +71,9 @@ public class FileServiceImpl implements FileService {
         Dictionary dictionary = new Dictionary();
         List<Notion> notions = new ArrayList<>();
         try {
-            new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)).lines().filter(line->line.matches("[\\p{InCyrillic}]+\\s.+")).map(line->line.split("\\s",2)).forEach(x->notions.add(new Notion(x[0], x[1])));
+            new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)).lines()
+                    .filter(line->line.matches("[\\p{InCyrillic}]+\\s.+"))
+                    .map(line->line.split("\\s",2)).forEach(x->notions.add(new Notion(x[0].toUpperCase(Locale.ROOT), x[1])));
         }
         catch (Exception e){
             throw new DictionaryFileException();
